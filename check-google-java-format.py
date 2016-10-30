@@ -8,26 +8,6 @@
 # If called with no arguments, it reads from standard input.
 # You could invoke this program, for example, in a git pre-commit hook.
 
-# Here are example targets you might put in a Makefile; integration with
-# other build systems is similar.
-#
-# reformat:
-# 	@wget -N https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/run-google-java-format.py
-# 	@run-google-java-format.py ${JAVA_FILES_FOR_FORMAT}
-#
-# check-format:
-# 	@wget -N https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/check-google-java-format.py
-# 	@check-google-java-format.py ${JAVA_FILES_FOR_FORMAT} || (echo "Try running:  make reformat" && false)
-
-# Here is an example of what you might put in a Git pre-commit hook.
-#
-# CHANGED_JAVA_FILES=`git diff --staged --name-only --diff-filter=ACM | grep '\.java$'` || true
-# if [ ! -z "$CHANGED_JAVA_FILES" ]; then
-#     wget -N https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/check-google-java-format.py
-#     python check-google-java-format.py ${CHANGED_JAVA_FILES}
-# fi
-
-
 from __future__ import print_function
 from distutils import spawn
 import filecmp
@@ -64,7 +44,7 @@ def under_git(dir, filename):
 # Don't replace local with remote if local is under version control.
 # It would be better to just test whether the remote is newer than local,
 # But raw GitHub URLs don't have the necessary last-modified information.
-if not under_git(script_dir+"/..", "bin/run-google-java-format.py"):
+if not under_git(script_dir, "run-google-java-format.py"):
     urllib.urlretrieve("https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/run-google-java-format.py", run_py)
     os.chmod(run_py, os.stat(run_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 

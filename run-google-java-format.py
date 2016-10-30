@@ -53,7 +53,7 @@ def under_git(dir, filename):
 # Don't replace local with remote if local is under version control.
 # It would be better to just test whether the remote is newer than local,
 # But raw GitHub URLs don't have the necessary last-modified information.
-if not under_git(script_dir+"/..", "bin/fixup-google-java-format.py"):
+if not under_git(script_dir, "fixup-google-java-format.py"):
     try:
         urllib.urlretrieve("https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/fixup-google-java-format.py", fixup_py)
     except:
@@ -92,58 +92,3 @@ result = subprocess.call([fixup_py] + files)
 if result != 0:
     print("Error when running fixup-google-java-format.py")
     sys.exit(result)
-
-
-###########################################################################
-### end of script
-###
-
-# If you reformat your codebase, then that may be disruptive to people who
-# have changes in their own branches/clones/forks.  (But, once you settle
-# on consistent formatting, that will never be a problem again.)
-
-# Here are some notes about a possible way to deal with upstream
-# reformatting, which have not yet been tested by fire:
-
-# For the person doing the reformatting:
-#  * Tag the commit before the whitespace change as "before reformatting".
-#     git tag -a before-reformatting -m "Code before running google-java-format"
-#  * Reformat by running a command such as:
-#     make reformat
-#     ant reformat
-#     gradle googleJavaFormat
-#  * Examine the diffs to look for poor reformatting:
-#     git diff -w -b | grep -v '^[-+]import' | grep -v '^[-+]$'
-#    or
-#     git diff -w -b | grep -v '^[-+]import' | grep -v '^[-+]$' | grep -v '@TADescription' | grep -v '@interface' | grep -v '@Target' | grep -v '@Default' | grep -v '@ImplicitFor' | grep -v '@SuppressWarnings' | grep -v '@SubtypeOf' | grep -v '@Override' | grep -v '@Pure' | grep -v '@Deterministic' | grep -v '@SideEffectFree'
-#    A key example is a single statement that is the body of an if/for/while
-#    being moved onto the previous line with the boolean expression.
-#     * Search for occurrences of ") return " on + lines.
-#     * Search for occurrences of "+.*\(if\|while\|for\) (.*) [^{].
-#     * Search for hunks that have fewer + than - lines.
-#    Add curly braces to get the body back on its own line.
-#  * Run tests
-#  * Commit changes:
-#    git commit -m "Reformat code using google-java-format"
-#  * Tag the commit that does the whitespace change as "after reformatting".
-#    git tag -a after-reformatting -m "Code after running google-java-format"
-#  * Push both the commits and the tags:
-#    git push --tags
-#
-# For a client to merge the massive upstream changes:
-#  Assuming before-reformatting is the last commit before reformatting
-#  and after-reformatting is the reformatting commit:
-#  * Merge in the commit before the reformatting into your branch.
-#      git merge before-reformatting
-#    Or, if you have "myremote" configured as remote, run these commands:
-#      git fetch myremote after-reformatting:after-reformatting
-#      git fetch myremote before-reformatting:before-reformatting
-#  * Resolve any conflicts, run tests, and commit your changes.
-#  * Merge in the reformatting commit, preferring all your own changes.
-#      git merge after-reformatting -s recursive -X ours
-#  * Run "ant reformat" or the equivalent command.
-#  * Commit any formatting changes.
-#  * Verify that this contains only changes you made (that is, the formatting
-#    changes were ignored):
-#      git diff after-reformatting...HEAD
-# For a client of a client, the above instructions must be revised.
