@@ -3,49 +3,50 @@
 Scripts to automatically download and run google-java-format,
 and to slightly improve its output.
 
+The [google-java-format](https://github.com/google/google-java-format)
+program reformats Java source code, but has two disadvantages:
+ * It's inconvenient to download.
+ * It's inconvenient to use to reformat code, requiring a long, hard-to-remember command line.
+ * It doesn't have a way to check whether a file is properly formatted, which is desirable in a pre-commit hook.
+ * It creates poor formatting for [annotations in comments](https://types.cs.washington.edu/checker-framework/current/checker-framework-manual.html#annotations-in-comments).
+
+These scripts correct these problems.
+
+
 ## run-google-java-format.py
 
-The [google-java-format](https://github.com/google/google-java-format)
-program reformats Java source code, but it creates poor formatting for
-annotations in comments.  This script runs google-java-format and then
-performs small changes to improve formatting of annotations in comments.
-If called with no arguments, it reads from and writes to standard output.
-
 This script reformats each file supplied on the command line according to
-the Google Java style (by calling out to the google-java-format program,
-https://github.com/google/google-java-format), but with improvements to
-the formatting of annotations in comments.
+the Google Java style, but with improvements to the formatting of
+annotations in comments.
+If called with no arguments, it reads from and writes to standard output.
 
 
 ## check-google-java-format.py</dt>
 
-Given `.java` file names on the command line, reports any that
-would be reformatted by the run-google-java-format.py program, and returns
+Given `.java` file names on the command line, reports any that would be
+reformatted by the `run-google-java-format.py` program, and returns
 non-zero status if there were any.
 If called with no arguments, it reads from standard output.
-
-This script checks whether the files supplied on the command line conform
-to the Google Java style (as enforced by the google-java-format program,
-but with improvements to the formatting of annotations in comments).
-If any files would be affected by running run-google-java-format.py,
-this script prints their names and returns a non-zero status.
-If called with no arguments, it reads from standard input.
 You could invoke this program, for example, in a git pre-commit hook.
 
 
 ## Integrating with a build system
 
-Here are example targets you might put in a Makefile; integration with
-other build systems is similar.
+There are two ways to install and use these scripts:
+ * clone the repository and run the scripts from there
+ * download the [run-google-java-format.py](https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/run-google-java-format.py) or [check-google-java-format.py](https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/check-google-java-format.py) file and run it.  The file will automatically download any additional needed files.
+
+Here are example targets you might put in a Makefile to utilize the first
+approach.  Integration with other build systems is similar.
 
 ```
 reformat:
-	@wget -N https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/run-google-java-format.py
-	@run-google-java-format.py ${JAVA_FILES_FOR_FORMAT}
+	@-git -C .run-google-java-format pull -q || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format
+	@.run-google-java-format/run-google-java-format.py ${JAVA_FILES_FOR_FORMAT}
 
 check-format:
-	@wget -N https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/check-google-java-format.py
-	@check-google-java-format.py ${JAVA_FILES_FOR_FORMAT} || (echo "Try running:  make reformat" && false)
+	@-git -C .run-google-java-format pull -q || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format
+	@.run-google-java-format/check-google-java-format.py ${JAVA_FILES_FOR_FORMAT}
 ```
 
 Here is an example of what you might put in a Git pre-commit hook:
@@ -53,21 +54,25 @@ Here is an example of what you might put in a Git pre-commit hook:
 ```
 CHANGED_JAVA_FILES=`git diff --staged --name-only --diff-filter=ACM | grep '\.java$'` || true
 if [ ! -z "$CHANGED_JAVA_FILES" ]; then
-    wget -N https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/check-google-java-format.py
-    python check-google-java-format.py ${CHANGED_JAVA_FILES}
+    git -C .run-google-java-format pull -q || git clone -q https://github.com/plume-lib/check-google-java-format.git .run-google-java-format
+    .run-google-java-format/check-google-java-format.py ${CHANGED_JAVA_FILES}
 fi
 ```
+
+You will also want to add `.run-google-java-format` to your
+`~/.gitignore-global` file or your project's `.gitignore` file.
+
 
 ## Dealing with large changes when reformatting your codebase
 
 When you first apply standard formatting, that may be disruptive to people
-who have changes in their own branches/clones/forks.  (But, once you settle on consistent 
-formatting, you will enjoy a number of benefits.
-Applying standard formatting to your codebase makes it easier to read.  It
-also simplifies use of a version control system:  it reduces the likelihood
-of merge conflicts due to formatting changes, and it ensures that commits
-and pull requests don't intermingle substantive changes with formatting
-changes.)
+who have changes in their own branches/clones/forks.
+(But, once you settle on consistent formatting, you will enjoy a number of
+benefits.  Applying standard formatting to your codebase makes it easier to
+read.  It also simplifies use of a version control system:  it reduces the
+likelihood of merge conflicts due to formatting changes, and it ensures
+that commits and pull requests don't intermingle substantive changes with
+formatting changes.)
 
 Here are some notes about a possible way to deal with upstream
 reformatting.  Comments/improvements are welcome.
@@ -78,9 +83,11 @@ For the person doing the reformatting:
  * Tag the commit before the whitespace change as "before reformatting".
    ```git tag -a before-reformatting -m "Code before running google-java-format"```
  * Reformat by running a command such as:
-    ```make reformat
+
+    make reformat
     ant reformat
     gradle googleJavaFormat```
+
  * Examine the diffs to look for poor reformatting:
    ```git diff -w -b | grep -v '^[-+]import' | grep -v '^[-+]$'```
    or
