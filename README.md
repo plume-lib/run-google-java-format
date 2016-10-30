@@ -64,6 +64,10 @@ check-format:
 	@./.run-google-java-format/check-google-java-format.py ${JAVA_FILES_FOR_FORMAT}
 ```
 
+To give a hint when there are malformatted files,
+you could add ` || (echo "Try running:  make reformat" && false)`
+at the end of the last line of the `check-format` target.
+
 
 ### Git pre-commit hook
 
