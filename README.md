@@ -105,7 +105,6 @@ at the end of the last line of the `check-format` target.
 ```
 
 
-
 ### Git pre-commit hook
 
 Here is an example of what you might put in a Git pre-commit hook:
