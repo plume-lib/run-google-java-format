@@ -58,7 +58,7 @@ concrete exmaples for build systems that are not listed here.)
 JAVA_FILES_TO_FORMAT ?= $(shell find src -name '*.java' -print | grep -v '\.\#' | grep -v WeakHasherMap.java | grep -v WeakIdentityHashMap.java | grep -v MathMDE.java | sort)
 
 get-run-google-java-format:
-	@-git -C .run-google-java-format pull -q || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format
+	@-(cd .run-google-java-format && git pull -q) || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format
 
 reformat:
 	${MAKE) get-run-google-java-format
@@ -83,7 +83,7 @@ at the end of the last line of the `check-format` target.
           description="Obtain or update run-google-java-format project">
     <exec executable="/bin/sh">
       <arg value="-c"/>
-      <arg value="git -C .run-google-java-format pull -q || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format"/>
+      <arg value="(cd .run-google-java-format && git -C pull -q) || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format"/>
     </exec>
   </target>
 
@@ -113,7 +113,7 @@ Here is an example of what you might put in a Git pre-commit hook:
 ```
 CHANGED_JAVA_FILES=`git diff --staged --name-only --diff-filter=ACM | grep '\.java$'` || true
 if [ ! -z "$CHANGED_JAVA_FILES" ]; then
-    git -C .run-google-java-format pull -q || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format
+    make get-run-google-java-format
     ./.run-google-java-format/check-google-java-format.py ${CHANGED_JAVA_FILES}
 fi
 ```
