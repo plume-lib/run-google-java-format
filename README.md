@@ -154,42 +154,54 @@ reformatting.  Comments/improvements are welcome.
 
 For the person doing the reformatting:
 
- * Create a new branch and do your work there.
+ 1. Create a new branch and do your work there.
    ```git checkout -b reformat-gjf```
- * Tag the commit before the whitespace change as "before reformatting".
+ 2. Tag the commit before the whitespace change as "before reformatting".
    ```git tag -a before-reformatting -m "Code before running google-java-format"```
- * Reformat by running a command such as
+ 3. Reformat by running a command such as
    `make reformat`,
    `ant reformat`, or
    `gradle googleJavaFormat` (or whatever buildfile target you have set up).
- * Examine the diffs to look for poor reformatting:
+ 4. Examine the diffs to look for poor reformatting:
 
    ```git diff -w -b | grep -v '^[-+]import' | grep -v '^[-+]$'```
 
-   (You may wish to `grep -v` some additional lines, depending on your project.)
+   (You may wish to use `grep -v` to exclude some additional lines,
+   depending on your project.)
 
-   A key example of poor reformatting is when you have a single statement
-   that is the body of an `if`/`for`/`while` statement.  google-java-format
-   will move this onto the previous line with the boolean expression.  It's
-   better to use curly braces `{}` on every `then` clause, `else` clause,
-   and `for`/`while` body.  To find the poor reformatting:
+   Here are two examples of poor reformatting to look out for:
 
-    * Search for occurrences of `^\+.*\) return `.
-    * Search for occurrences of `^\+.*\(if\|while\|for\) (.*) [^{]`.
-    * Search for hunks that have fewer `+` than `-` lines.
+    * A single statement
+      that is the body of an `if`/`for`/`while` statement.  google-java-format
+      will move this onto the previous line with the boolean expression.  It's
+      better to use curly braces `{}` on every `then` clause, `else` clause,
+      and `for`/`while` body.  To find the poor reformatting:
 
-   Add curly braces to get the body back on its own line.
-   (You might want to do this in the master branch, and then start over with adding formatting.)
- * Run tests
- * Commit changes:
+       * Search for occurrences of `^\+.*\) return `.
+       * Search for occurrences of `^\+.*\(if\|while\|for\) (.*) [^{]`.
+       * Search for hunks that have fewer `+` than `-` lines.
+
+      Add curly braces to get the body back on its own line.
+
+    * Formatted Javadoc.  To preserve line breaks and horizontal formatting,
+      you may wish to enclose parts of your Javadoc comments in `<pre>...</pre>`
+      or use `<ul>` to format lists.
+
+   (You can work in the branch where you are doing reformatting.
+   Alternately, you might want to change your source code in the master
+   branch, move the `before-reformatting` tag, and then start over with
+   formatting.)
+
+ 5. Run tests
+ 6. Commit changes:
 
    ```git commit -m "Reformat code using google-java-format"```
 
- * Tag the commit that does the whitespace change as "after reformatting".
+ 7. Tag the commit that does the whitespace change as "after reformatting".
 
    ```git tag -a after-reformatting -m "Code after running google-java-format"```
 
- * Push both the commits and the tags:
+ 8. Push both the commits and the tags:
 
    ```git push --tags```
 
@@ -197,7 +209,7 @@ For a client to merge the massive upstream changes:
 Assuming before-reformatting is the last commit before reformatting
 and after-reformatting is the reformatting commit:
 
- * Merge in the commit before the reformatting into your branch.
+ 1. Merge in the commit before the reformatting into your branch.
 
      ```git merge before-reformatting```
 
@@ -208,14 +220,14 @@ and after-reformatting is the reformatting commit:
      git fetch myremote before-reformatting:before-reformatting
      ```
 
- * Resolve any conflicts, run tests, and commit your changes.
- * Merge in the reformatting commit, preferring all your own changes.
+ 2. Resolve any conflicts, run tests, and commit your changes.
+ 3. Merge in the reformatting commit, preferring all your own changes.
 
      ```git merge after-reformatting -s recursive -X ours```
 
- * Run `ant reformat` or the equivalent command.
- * Commit any formatting changes.
- * Verify that this contains only changes you made (that is, the formatting
+ 4. Run `ant reformat` or the equivalent command.
+ 5. Commit any formatting changes.
+ 6. Verify that this contains only changes you made (that is, the formatting
    changes were ignored):
 
      ```git diff after-reformatting...HEAD```
