@@ -25,9 +25,9 @@ fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 
 # Version 1.1 mangles "@param <P>", so take a risk on 1.2 for now.
 # gjf_version = "google-java-format-1.1"
+# gjf_snapshot = ""
 gjf_version = "google-java-format-1.2"
-gjf_snapshot = ""
-# gjf_snapshot = "-SNAPSHOT"
+gjf_snapshot = "-SNAPSHOT"
 
 gjf_jar_name = gjf_version + gjf_snapshot + "-all-deps.jar"
 # gjf_url = "https://github.com/google/google-java-format/releases/download/" + gjf_version + "/" + gjf_jar_name
