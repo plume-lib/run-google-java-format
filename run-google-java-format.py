@@ -23,8 +23,17 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # call directly in Python.
 fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 
-gjf_jar_name = "google-java-format-1.1-all-deps.jar"
-# gjf_jar_name = "google-java-format-1.2-SNAPSHOT-all-deps.jar"
+# Version 1.1 mangles "@param <P>", so take a risk on 1.2 for now.
+# gjf_version = "google-java-format-1.1"
+gjf_version = "google-java-format-1.2"
+gjf_snapshot = ""
+# gjf_snapshot = "-SNAPSHOT"
+
+gjf_jar_name = gjf_version + gjf_snapshot + "-all-deps.jar"
+# gjf_url = "https://github.com/google/google-java-format/releases/download/" + gjf_version + "/" + gjf_jar_name
+gjf_url = "http://types.cs.washington.edu/" + gjf_jar_name
+# gjf_url = "http://homes.cs.washington.edu/~mernst/tmp2/" + gjf_jar_name
+
 # Set gjf_jar_path, or retrieve it if it doesn't appear locally
 if os.path.isfile(os.path.join(script_dir, gjf_jar_name)):
     gjf_jar_path = os.path.join(script_dir, gjf_jar_name)
@@ -32,8 +41,7 @@ elif os.path.isfile(os.path.join(os.path.dirname(script_dir), "lib", gjf_jar_nam
     gjf_jar_path = os.path.join(os.path.dirname(script_dir), "lib", gjf_jar_name)
 else:
     gjf_jar_path = os.path.join(script_dir, gjf_jar_name)
-    urllib.urlretrieve("https://github.com/google/google-java-format/releases/download/google-java-format-1.1/google-java-format-1.1-all-deps.jar", gjf_jar_path)
-    # urllib.urlretrieve("http://types.cs.washington.edu/" + gjf_jar_name, gjf_jar_path)
+    urllib.urlretrieve(gjf_url, gjf_jar_path)
 
 # For some reason, the "git ls-files" must be run from the root.
 # (I can run "git ls-files" from the command line in any directory.)
