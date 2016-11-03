@@ -105,6 +105,43 @@ at the end of the last line of the `check-format` target.
 ```
 
 
+### Gradle `build.gradle`
+
+```
+/* Obtain the run-google-java-format scripts */
+task getCodeFormatScripts(type: Exec) {
+  commandLine "bash", "-c", "(cd .run-google-java-format && git pull -q)" +
+          " || " +
+          "git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format"
+}
+
+/* Check whether the code is properly formatted */
+task checkCodeStyle(type: Exec) {
+  description "Run checkCodeStyle to check if the source code is properly formatted"
+  commandLine "bash", "-c", "find src -name \"*.java\" -type f " +
+          "-not -path \"src/test/resources/src/*\" " +
+          "-not -path \"src/test/resources/aspects/*\" " +
+          "-not -path \"src/main/resources/AspectTemplate.java\" " +
+          "| xargs ./.run-google-java-format/check-google-java-format.py"
+}
+checkCodeStyle.dependsOn getCodeFormatScripts
+build.dependsOn checkCodeStyle
+
+/* Format the code according to the Google Java format code style */
+task formatCode(type: Exec) {
+  description "Run formatCode to properly format the source code"
+  commandLine "bash", "-c", "find src -name \"*.java\" -type f " +
+          "-not -path \"src/test/resources/src/*\" " +
+          "-not -path \"src/test/resources/aspects/*\" " +
+          "-not -path \"src/main/resources/AspectTemplate.java\" " +
+          "| xargs ./.run-google-java-format/check-google-java-format.py " +
+          "| tr -d \" \" | cut -d ':' -f2 " +
+          "| xargs ./.run-google-java-format/run-google-java-format.py"
+}
+formatCode.dependsOn getCodeFormatScripts
+```
+
+
 ### Git pre-commit hook
 
 Here is an example of what you might put in a Git pre-commit hook:
