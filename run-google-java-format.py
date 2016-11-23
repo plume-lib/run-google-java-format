@@ -28,7 +28,7 @@ fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 # gjf_snapshot = ""
 # Never change the file at a URL; make unique by adding a date.
 gjf_version = "google-java-format-1.2"
-gjf_snapshot = "-SNAPSHOT-20161121"
+gjf_snapshot = "-SNAPSHOT-20161122"
 
 gjf_jar_name = gjf_version + gjf_snapshot + "-all-deps.jar"
 # gjf_url = "https://github.com/google/google-java-format/releases/download/" + gjf_version + "/" + gjf_jar_name
