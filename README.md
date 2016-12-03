@@ -5,7 +5,7 @@ and to slightly improve its output.
 
 The [google-java-format](https://github.com/google/google-java-format)
 program reformats Java source code, but has some disadvantages:
- * It's inconvenient to install.
+ * It's inconvenient to install, and you have to remember to update your installation periodically.
  * To reformat code, it requires a long, hard-to-remember command line.
  * It cannot check whether a file is properly formatted, which is desirable in a pre-commit hook.
  * It creates poor formatting for [annotations in comments](https://types.cs.washington.edu/checker-framework/current/checker-framework-manual.html#annotations-in-comments).
