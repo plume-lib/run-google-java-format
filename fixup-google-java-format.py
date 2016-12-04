@@ -112,6 +112,8 @@ typeAnnotations = set([
     "IdentifierOrArray",
     "ImplicitAnno",
     "Initialized",
+    "IndexFor",
+    "IndexOrHigh",
     "InternalForm",
     "Interned",
     "IntVal",
