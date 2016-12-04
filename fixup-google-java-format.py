@@ -131,8 +131,6 @@ typeAnnotations = set([
     "LB_TOP",
     "LeakedToResult",
     "Length",
-    "LessThanLength",
-    "LessThanOrEqualToLength",
     "Linear",
     "LocalizableKey",
     "LocalizableKeyBottom",
