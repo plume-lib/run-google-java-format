@@ -86,11 +86,13 @@ if len(files) == 0:
     sys.exit(1)
 
 result = subprocess.call(["java", "-jar", gjf_jar_path, "--replace"] + files)
+## This if statement used to be commented out, because google-java-format
+## crashed a lot.  It seems more stable now.
 # Don't stop if there was an error, because google-java-format won't munge
 # files and we still want to run fixup-google-java-format.py.
-# if result != 0:
-#     print("Error when running google-java-format")
-#     sys.exit(result)
+if result != 0:
+    print("Error when running google-java-format")
+    sys.exit(result)
 
 # Remove command-line arguments
 files = [f for f in files if not f.startswith("-")]
