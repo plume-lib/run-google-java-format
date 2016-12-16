@@ -1,7 +1,7 @@
 # run-google-java-format
 
 Scripts to automatically download and run google-java-format,
-and to slightly improve its output.
+to slightly improve its output, and to add checking functionality.
 
 The [google-java-format](https://github.com/google/google-java-format)
 program reformats Java source code, but has some disadvantages:
