@@ -145,7 +145,7 @@ formatCode.dependsOn getCodeFormatScripts
 ### Git pre-commit hook
 
 Here is an example of what you might put in a Git pre-commit hook:
-(For efficiency, this only checks the files that are being comitted.)
+This only checks the files that are being comitted, which is much faster than checking all files.
 
 ```
 CHANGED_JAVA_FILES=`git diff --staged --name-only --diff-filter=ACM | grep '\.java$'` || true
@@ -161,8 +161,8 @@ You will also want to add `.run-google-java-format` to your
 
 #### Finding trailing spaces
 
-Not related to google-java-format, here is code for your Git pre-commit
-hook that finds files that have trailing spaces:  (google-java-format will complain about Java files with trailing spaces, but this is useful for other types of files.)
+google-java-format will complain about Java files with trailing spaces.
+Here is code for your Git pre-commit hook that finds all files that have trailing spaces.
 
 ```
 CHANGED_STYLE_FILES=`git diff --staged --name-only --diff-filter=ACM` || true
