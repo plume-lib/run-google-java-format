@@ -21,7 +21,7 @@ annotations in comments.
 If called with no arguments, it reads from and writes to standard output.
 
 
-## check-google-java-format.py</dt>
+## check-google-java-format.py
 
 Given `.java` file names on the command line, reports any that would be
 reformatted by the `run-google-java-format.py` program, and returns
