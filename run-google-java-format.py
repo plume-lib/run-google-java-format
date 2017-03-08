@@ -23,17 +23,19 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # call directly in Python.
 fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 
-# Version 1.1 mangles "@param <P>", so take a risk on 1.2 for now.
-# gjf_version = "google-java-format-1.1"
-# gjf_snapshot = ""
+# To use an officially released version.
+gjf_version = "1.3"
+gjf_snapshot = ""
+gjf_url_base = "https://github.com/google/google-java-format/releases/download/google-java-format-" + gjf_version + "/"
+# To use a non-official version, because an official version is unusably buggy
+# (like 1.1) or no new release has been made in a long time.
 # Never change the file at a URL; make unique by adding a date.
-gjf_version = "google-java-format-1.2"
-gjf_snapshot = "-SNAPSHOT-20161123"
+# gjf_snapshot = "-SNAPSHOT-20161123"
+# gjf_url_base = "http://types.cs.washington.edu/"
+# gjf_url_base = "http://homes.cs.washington.edu/~mernst/tmp2/"
 
-gjf_jar_name = gjf_version + gjf_snapshot + "-all-deps.jar"
-# gjf_url = "https://github.com/google/google-java-format/releases/download/" + gjf_version + "/" + gjf_jar_name
-gjf_url = "http://types.cs.washington.edu/" + gjf_jar_name
-# gjf_url = "http://homes.cs.washington.edu/~mernst/tmp2/" + gjf_jar_name
+gjf_jar_name = "google-java-format-" + gjf_version + gjf_snapshot + "-all-deps.jar"
+gjf_url = gjf_url_base + gjf_jar_name
 
 # Set gjf_jar_path, or retrieve it if it doesn't appear locally. Does not update
 # from remove path if remote is newer, so never change files on the server.
