@@ -51,6 +51,9 @@ Add the following targets to your build system.
 Integration with other build systems is similar.  (Feel free to contribute
 concrete exmaples for build systems that are not listed here.)
 
+Some of these commands have only been tested on Unix;
+if you can create a version that also works on Windows, please contribute it.
+
 
 ### Makefile
 
@@ -79,15 +82,36 @@ at the end of the last line of the `check-format` target.
 ```
   <fileset id="formatted.java.files" dir="." includes="**/*.java" excludes="**/checker/jdk/,**/stubparser/,**/eclipse/,**/nullness-javac-errors/"/>
 
+  <target name="-run-google-java-format.check">
+    <condition property="run-google-java-format.exists">
+      <available file="${checker.loc}/bin-devel/.run-google-java-format" type="dir"/>
+    </condition>
+  </target>
+
   <target name="-get-run-google-java-format"
-          description="Obtain or update run-google-java-format project">
-    <exec executable="/bin/sh">
-      <arg value="-c"/>
-      <arg value="(cd .run-google-java-format && git -C pull -q) || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format"/>
+          description="Obtain the run-google-java-format project"
+          depends="-run-google-java-format.check"
+          unless="run-google-java-format.exists">
+    <exec executable="git"
+          dir="${checker.loc}/bin-devel">
+      <arg value="clone"/>
+      <arg value="-q"/>
+      <arg value="https://github.com/plume-lib/run-google-java-format.git"/>
+      <arg value=".run-google-java-format"/>
     </exec>
   </target>
 
-  <target name="reformat" depends="-get-run-google-java-format"
+  <target name="-update-run-google-java-format"
+          description="Update the run-google-java-format project"
+          depends="-get-run-google-java-format">
+    <exec executable="git"
+          dir="${checker.loc}/bin-devel/.run-google-java-format">
+      <arg value="pull"/>
+      <arg value="-q"/>
+    </exec>
+  </target>
+
+  <target name="reformat" depends="-update-run-google-java-format"
           description="Reformat Java code">
     <apply executable="python" failonerror="true">
       <arg value="./.run-google-java-format/run-google-java-format.py"/>
@@ -95,7 +119,7 @@ at the end of the last line of the `check-format` target.
     </apply>
   </target>
 
-  <target name="check-format" depends="-get-run-google-java-format"
+  <target name="check-format" depends="-update-run-google-java-format"
           description="Check Java code formatting">
     <apply executable="python" failonerror="true">
       <arg value="./.run-google-java-format/check-google-java-format.py"/>
