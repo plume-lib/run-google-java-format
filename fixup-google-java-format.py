@@ -221,7 +221,7 @@ typeAnnotations = set([
     "RegexBottom",
     "ReportUnqualified",
     "s",
-    "SearchIndex",
+    "SearchIndexFor",
     "Sibling1",
     "Sibling2",
     "SiblingWithFields",
