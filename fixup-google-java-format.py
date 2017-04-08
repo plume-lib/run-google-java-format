@@ -192,6 +192,7 @@ typeAnnotations = set([
     "PolyEncrypted",
     "PolyFenum",
     "PolyGuardedBy",
+    "PolyIndex",
     "PolyInterned",
     "PolyKeyFor",
     "PolyLength",
