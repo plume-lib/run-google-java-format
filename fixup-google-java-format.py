@@ -212,6 +212,7 @@ typeAnnotations = set([
     "PolyUI",
     "PolyUnit",
     "PolyUpperBound",
+    "PolyValue",
     "Positive",
     "PropertyKey",
     "PropertyKeyBottom",
