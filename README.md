@@ -87,7 +87,7 @@ at the end of the last line of the `check-format` target.
 
   <target name="-run-google-java-format.check">
     <condition property="run-google-java-format.exists">
-      <available file="${checker.loc}/bin-devel/.run-google-java-format" type="dir"/>
+      <available file=".run-google-java-format" type="dir"/>
     </condition>
   </target>
 
@@ -96,7 +96,7 @@ at the end of the last line of the `check-format` target.
           depends="-run-google-java-format.check"
           unless="run-google-java-format.exists">
     <exec executable="git"
-          dir="${checker.loc}/bin-devel">
+          dir=".">
       <arg value="clone"/>
       <arg value="-q"/>
       <arg value="https://github.com/plume-lib/run-google-java-format.git"/>
@@ -108,7 +108,7 @@ at the end of the last line of the `check-format` target.
           description="Update the run-google-java-format project"
           depends="-get-run-google-java-format">
     <exec executable="git"
-          dir="${checker.loc}/bin-devel/.run-google-java-format">
+          dir=".run-google-java-format">
       <arg value="pull"/>
       <arg value="-q"/>
     </exec>
