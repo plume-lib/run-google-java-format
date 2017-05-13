@@ -207,8 +207,9 @@ fi
 When you first apply standard formatting, that may be disruptive to people
 who have changes in their own branches/clones/forks.
 (But, once you settle on consistent formatting, you will enjoy a number of
-benefits.  Applying standard formatting to your codebase makes it easier to
-read.  It also simplifies use of a version control system:  it reduces the
+benefits.  Applying standard formatting to your codebase makes the code easier
+to read.  It eases code review by eliminating comments about code style.
+It also simplifies use of a version control system:  it reduces the
 likelihood of merge conflicts due to formatting changes, and it ensures
 that commits and pull requests don't intermingle substantive changes with
 formatting changes.)
@@ -239,7 +240,8 @@ For the person doing the reformatting:
       that is the body of an `if`/`for`/`while` statement.  google-java-format
       will move this onto the previous line with the boolean expression.  It's
       better to use curly braces `{}` on every `then` clause, `else` clause,
-      and `for`/`while` body.  To find the poor reformatting:
+      and `for`/`while` body.  To find the poor reformatting (regexps in Emacs
+      syntax):
 
        * Search for occurrences of `^\+.*\) return `.
        * Search for occurrences of `^\+.*\(if\|while\|for\) (.*) [^{]`.
