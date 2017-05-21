@@ -301,6 +301,8 @@ voodootrailingspaceRegex = re.compile(r"(/\*>>> ?@.*\bthis\*/) (\))")
 #  * An annotation in comments
 #  * a comment like /*offset = */ that should appear right
 #    before the argument it documents.
+#    (Supported in main google-java-format as of April 26, 2017, but not yet in a release:
+#    https://github.com/google/google-java-format/commit/ca0c4d90cdbb46b3a2bf9c2b83d0bd558cccc41e )
 # The annotation will be moved to the beginning of the following line,
 # if it appears in typeAnnotations.
 # The regex does not permit "()" within a string in an annotation, such as
