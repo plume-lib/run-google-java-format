@@ -12,6 +12,7 @@ from __future__ import print_function
 from distutils import spawn
 import filecmp
 import os
+import os.path
 import re
 import shutil
 import stat
@@ -69,12 +70,14 @@ temps = []
 cmdlineargs = [f for f in files if f.startswith("-")]
 files = [f for f in files if not f.startswith("-")]
 for fname in files:
-    ftemp = temporary_file_name() + ".java"
+    ftemp = temporary_file_name() + "_" + os.path.basename(fname)
     shutil.copyfile(fname, ftemp)
     temps.append(ftemp)
 
 if debug: print("Running run-google-java-format.py")
-# To save one process creation, could call directly in Python.
+# Problem:  if a file is syntactically illegal, this outputs the temporary file
+# name rather than the real file name.
+# Minor optimization: To save one process creation, could call directly in Python.
 result = subprocess.call([run_py] + cmdlineargs + temps)
 if result != 0:
     cleanup()
