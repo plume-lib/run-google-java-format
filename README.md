@@ -116,7 +116,7 @@ at the end of the last line of the `check-format` target.
 
   <target name="reformat" depends="-update-run-google-java-format"
           description="Reformat Java code">
-    <apply executable="python" failonerror="true">
+    <apply executable="python" parallel="true" maxparallel="${maxparallel}" failonerror="true">
       <arg value="./.run-google-java-format/run-google-java-format.py"/>
       <fileset refid="formatted.java.files"/>
     </apply>
@@ -124,10 +124,23 @@ at the end of the last line of the `check-format` target.
 
   <target name="check-format" depends="-update-run-google-java-format"
           description="Check Java code formatting">
-    <apply executable="python" failonerror="true">
+    <apply executable="python" parallel="true" maxparallel="${maxparallel}"
+       failonerror="false" resultproperty="check.format.result"
+       outputproperty="check.format.stdout" errorproperty="check.format.stderr">
       <arg value="./.run-google-java-format/check-google-java-format.py"/>
       <fileset refid="formatted.java.files"/>
     </apply>
+    <echo unless:blank="${check.format.stdout}">${check.format.stdout}</echo>
+    <echo unless:blank="${check.format.stderr}">${check.format.stderr}</echo>
+    <echo unless:blank="${check.format.stderr}">Fix syntax errors, then re-run:  ant check-format</echo>
+    <echo unless:blank="${check.format.stdout}" if:blank="${check.format.stderr}">Try running:  ant reformat</echo>
+    <fail>
+      <condition>
+        <not>
+          <equals arg1="0" arg2="${check.format.result}"/>
+        </not>
+      </condition>
+    </fail>
   </target>
 ```
 
