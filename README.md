@@ -66,24 +66,41 @@ JAVA_FILES_TO_FORMAT ?= $(shell find src -name '*.java' -print | grep -v '\.\#' 
 get-run-google-java-format:
 	@-(cd .run-google-java-format && git pull -q) || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format
 
+# Requires Java 8
 reformat:
-	${MAKE) get-run-google-java-format
+	${MAKE} get-run-google-java-format
 	@./.run-google-java-format/run-google-java-format.py ${JAVA_FILES_TO_FORMAT}
 
+# Requires Java 8
 check-format:
-	${MAKE) get-run-google-java-format
-	@./.run-google-java-format/check-google-java-format.py ${JAVA_FILES_TO_FORMAT}
+	${MAKE} get-run-google-java-format
+	@./.run-google-java-format/check-google-java-format.py ${JAVA_FILES_TO_FORMAT} || (echo "Try running:  make reformat" && /bin/false)
 ```
-
-To output a message when there are malformatted files,
-you could add ` || (echo "Try running:  make reformat" && false)`
-at the end of the last line of the `check-format` target.
 
 
 ### Ant `build.xml`
 
+At the top of your Ant file, augment the `<project>` block:
+
+```
+<project ...
+         xmlns:if="ant:if" xmlns:unless="ant:unless">
+```
+
+Then, add this:
+
 ```
   <fileset id="formatted.java.files" dir="." includes="**/*.java" excludes="**/checker/jdk/,**/stubparser/,**/eclipse/,**/nullness-javac-errors/"/>
+
+  <condition property="isMac">
+    <os family="mac" />
+  </condition>
+
+  <!-- Avoids "Argument list too long" message.  You can also set
+       this property in file local.properties. -->
+  <condition property="maxparallel" value="1000" else="-1">
+    <isset property="isMac"/>
+  </condition>
 
   <target name="-run-google-java-format.check">
     <condition property="run-google-java-format.exists">
@@ -148,37 +165,35 @@ at the end of the last line of the `check-format` target.
 ### Gradle `build.gradle`
 
 ```
-/* Obtain the run-google-java-format scripts */
 task getCodeFormatScripts(type: Exec) {
+  description "Obtain the run-google-java-format scripts"
   commandLine "bash", "-c", "(cd .run-google-java-format && git pull -q)" +
           " || " +
           "git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format"
 }
 
-/* Check whether the code is properly formatted */
-task checkCodeStyle(type: Exec) {
-  description "Run checkCodeStyle to check if the source code is properly formatted"
-  commandLine "bash", "-c", "find src -name \"*.java\" -type f " +
-          "-not -path \"src/test/resources/src/*\" " +
-          "-not -path \"src/test/resources/aspects/*\" " +
-          "-not -path \"src/main/resources/AspectTemplate.java\" " +
-          "| xargs ./.run-google-java-format/check-google-java-format.py"
-}
-checkCodeStyle.dependsOn getCodeFormatScripts
-build.dependsOn checkCodeStyle
-
-/* Format the code according to the Google Java format code style */
-task formatCode(type: Exec) {
-  description "Run formatCode to properly format the source code"
+task checkFormat(type: Exec) {
+  description "Check whether the source code is properly formatted"
   commandLine "bash", "-c", "find src -name \"*.java\" -type f " +
           "-not -path \"src/test/resources/src/*\" " +
           "-not -path \"src/test/resources/aspects/*\" " +
           "-not -path \"src/main/resources/AspectTemplate.java\" " +
           "| xargs ./.run-google-java-format/check-google-java-format.py " +
-          "| tr -d \" \" | cut -d ':' -f2 " +
+	  "|| (echo 'Try running:  gradle reformat' && false)"
+}
+checkFormat.dependsOn getCodeFormatScripts
+build.dependsOn checkFormat
+
+/* Format the code according to the Google Java format code style */
+task reformat(type: Exec) {
+  description "Format the Java source code"
+  commandLine "bash", "-c", "find src -name \"*.java\" -type f " +
+          "-not -path \"src/test/resources/src/*\" " +
+          "-not -path \"src/test/resources/aspects/*\" " +
+          "-not -path \"src/main/resources/AspectTemplate.java\" " +
           "| xargs ./.run-google-java-format/run-google-java-format.py"
 }
-formatCode.dependsOn getCodeFormatScripts
+reformat.dependsOn getCodeFormatScripts
 ```
 
 
