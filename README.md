@@ -63,17 +63,17 @@ if you can create a version that also works on Windows, please contribute it.
 ```
 JAVA_FILES_TO_FORMAT ?= $(shell find src -name '*.java' -print | grep -v '\.\#' | grep -v WeakHasherMap.java | grep -v WeakIdentityHashMap.java | grep -v MathMDE.java | sort)
 
-get-run-google-java-format:
+update-run-google-java-format:
 	@-(cd .run-google-java-format && git pull -q) || git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format
 
 # Requires Java 8
 reformat:
-	${MAKE} get-run-google-java-format
+	${MAKE} update-run-google-java-format
 	@./.run-google-java-format/run-google-java-format.py ${JAVA_FILES_TO_FORMAT}
 
 # Requires Java 8
 check-format:
-	${MAKE} get-run-google-java-format
+	${MAKE} update-run-google-java-format
 	@./.run-google-java-format/check-google-java-format.py ${JAVA_FILES_TO_FORMAT} || (echo "Try running:  make reformat" && /bin/false)
 ```
 
@@ -90,6 +90,7 @@ At the top of your Ant file, augment the `<project>` block:
 Then, add this:
 
 ```
+  <!-- Adjust for your project. -->
   <fileset id="formatted.java.files" dir="." includes="**/*.java" excludes="**/checker/jdk/,**/stubparser/,**/eclipse/,**/nullness-javac-errors/"/>
 
   <condition property="isMac">
@@ -121,7 +122,7 @@ Then, add this:
     </exec>
   </target>
 
-  <target name="-update-run-google-java-format"
+  <target name="update-run-google-java-format"
           description="Update the run-google-java-format project"
           depends="-get-run-google-java-format">
     <exec executable="git"
@@ -131,7 +132,7 @@ Then, add this:
     </exec>
   </target>
 
-  <target name="reformat" depends="-update-run-google-java-format"
+  <target name="reformat" depends="update-run-google-java-format"
           description="Reformat Java code">
     <apply executable="python" parallel="true" maxparallel="${maxparallel}" failonerror="true">
       <arg value="./.run-google-java-format/run-google-java-format.py"/>
@@ -139,7 +140,7 @@ Then, add this:
     </apply>
   </target>
 
-  <target name="check-format" depends="-update-run-google-java-format"
+  <target name="check-format" depends="update-run-google-java-format"
           description="Check Java code formatting">
     <apply executable="python" parallel="true" maxparallel="${maxparallel}"
        failonerror="false" resultproperty="check.format.result"
@@ -203,9 +204,13 @@ Here is an example of what you might put in a Git pre-commit hook:
 This only checks the files that are being comitted, which is much faster than checking all files.
 
 ```
-CHANGED_JAVA_FILES=`git diff --staged --name-only --diff-filter=ACM | grep '\.java$'` || true
+CHANGED_JAVA_FILES=`git diff --staged --name-only --diff-filter=ACM | grep '\.java$' | grep -v '/ignored-directory/' ` || true
 if [ ! -z "$CHANGED_JAVA_FILES" ]; then
-    make get-run-google-java-format
+    # Choose one of these lines, depending on your build system:
+    ant update-run-google-java-format
+    make update-run-google-java-format
+    ## For debugging:
+    # echo "CHANGED_JAVA_FILES: ${CHANGED_JAVA_FILES}"
     ./.run-google-java-format/check-google-java-format.py ${CHANGED_JAVA_FILES}
 fi
 ```
