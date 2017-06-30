@@ -207,8 +207,8 @@ This only checks the files that are being comitted, which is much faster than ch
 CHANGED_JAVA_FILES=`git diff --staged --name-only --diff-filter=ACM | grep '\.java$' | grep -v '/ignored-directory/' ` || true
 if [ ! -z "$CHANGED_JAVA_FILES" ]; then
     # Choose one of these lines, depending on your build system:
-    ant update-run-google-java-format
-    make update-run-google-java-format
+    ant -silent update-run-google-java-format
+    make --silent update-run-google-java-format
     ## For debugging:
     # echo "CHANGED_JAVA_FILES: ${CHANGED_JAVA_FILES}"
     ./.run-google-java-format/check-google-java-format.py ${CHANGED_JAVA_FILES}
