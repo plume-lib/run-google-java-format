@@ -225,9 +225,10 @@ google-java-format will complain about Java files with trailing spaces.
 Here is code for your Git pre-commit hook that finds all files that have trailing spaces.
 
 ```
-CHANGED_STYLE_FILES=`git diff --staged --name-only --diff-filter=ACM` || true
-if [ ! -z "$CHANGED_STYLE_FILES" ]; then
-    FILES_WITH_TRAILING_SPACES=`grep -l -s '[[:blank:]]$' ${CHANGED_STYLE_FILES} 2>&1` || true
+CHANGED_FILES=`git diff --staged --name-only --diff-filter=ACM | grep -v '.class$' | grep -v '.gz$'` | grep -v '.jar$'` | grep -v '.png$' | grep -v '.xcf$'` || true
+if [ ! -z "$CHANGED_FILES" ]; then
+    # echo "CHANGED_FILES: ${CHANGED_FILES}"
+    FILES_WITH_TRAILING_SPACES=`grep -l -s '[[:blank:]]$' ${CHANGED_FILES} 2>&1` || true
     if [ ! -z "$FILES_WITH_TRAILING_SPACES" ]; then
         echo "Some files have trailing whitespace: ${FILES_WITH_TRAILING_SPACES}" && exit 1
     fi
