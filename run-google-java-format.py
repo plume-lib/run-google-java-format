@@ -23,14 +23,15 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # call directly in Python.
 fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 
-# To use an officially released version.
+## To use an officially released version.
 gjf_version = "1.3"
 gjf_snapshot = ""
 gjf_url_base = "https://github.com/google/google-java-format/releases/download/google-java-format-" + gjf_version + "/"
-# To use a non-official version, because an official version is unusably buggy
-# (like 1.1) or no new release has been made in a long time.
-# Never change the file at a URL; make unique by adding a date.
-# gjf_snapshot = "-SNAPSHOT-20161123"
+## To use a non-official version, because an official version is unusably buggy
+## (like 1.1) or no new release has been made in a long time.
+## Never change the file at a URL; make it unique by adding a date.
+# gjf_version = "1.5"
+# gjf_snapshot = "-SNAPSHOT-20171012"
 # gjf_url_base = "http://types.cs.washington.edu/"
 # gjf_url_base = "http://homes.cs.washington.edu/~mernst/tmp2/"
 
