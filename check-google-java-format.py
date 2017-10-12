@@ -8,6 +8,9 @@
 # If called with no arguments, it reads from standard input.
 # You could invoke this program, for example, in a git pre-commit hook.
 
+# TODO: Thanks to https://github.com/google/google-java-format/pull/106
+# this script can be eliminated, or its interface simplified.
+
 from __future__ import print_function
 from distutils import spawn
 import filecmp

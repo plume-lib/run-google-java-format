@@ -36,10 +36,10 @@ You could invoke this program, for example, in a git pre-commit hook (see below)
 ## Installing
 
 There are two ways to install and use these scripts:
- * clone the repository (run `git clone
+ * Clone the repository (run `git clone
    https://github.com/plume-lib/run-google-java-format.git`) and run the
-   scripts from there
- * download the
+   scripts from there.
+ * Download the
    [run-google-java-format.py](https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/run-google-java-format.py)
    or
    [check-google-java-format.py](https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/check-google-java-format.py)
