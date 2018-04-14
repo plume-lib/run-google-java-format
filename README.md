@@ -333,3 +333,18 @@ and after-reformatting is the reformatting commit:
      ```git diff after-reformatting...HEAD```
 
 For a client of a client (such as a fork of a fork), the above instructions must be revised.
+
+
+## Troubleshooting
+
+If you get an error in
+```urllib.urlretrieve(gjf_url, gjf_jar_path)```
+then there is a problem with your installation of Python.
+
+On MacOS Sierra, you can correct the problem by running these commands:
+
+```
+brew install openssl
+brew install python@2 --with-brewed-openssl
+brew link --overwrite python@2
+```
