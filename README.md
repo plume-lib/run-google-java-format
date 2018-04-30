@@ -254,8 +254,10 @@ reformatting.  Comments/improvements are welcome.
 For the person doing the reformatting:
 
  1. Create a new branch and do your work there.
+
    ```git checkout -b reformat-gjf```
  2. Tag the commit before the whitespace change as "before reformatting".
+
    ```git tag -a before-reformatting -m "Code before running google-java-format"```
  3. Reformat by running a command such as
    `make reformat`,
