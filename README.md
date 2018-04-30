@@ -180,7 +180,7 @@ task checkFormat(type: Exec) {
           "-not -path \"src/test/resources/aspects/*\" " +
           "-not -path \"src/main/resources/AspectTemplate.java\" " +
           "| xargs ./.run-google-java-format/check-google-java-format.py " +
-	  "|| (echo 'Try running:  gradle reformat' && false)"
+          "|| (echo 'Try running:  gradle reformat' && false)"
 }
 checkFormat.dependsOn getCodeFormatScripts
 build.dependsOn checkFormat
@@ -270,22 +270,22 @@ For the person doing the reformatting:
 
    Here are two examples of poor reformatting to look out for:
 
-     * A single statement
-       that is the body of an `if`/`for`/`while` statement.  google-java-format
-       will move this onto the previous line with the boolean expression.  It's
-       better to use curly braces `{}` on every `then` clause, `else` clause,
-       and `for`/`while` body.  To find the poor reformatting (regexps in Emacs
-       syntax):
+   * A single statement
+     that is the body of an `if`/`for`/`while` statement.  google-java-format
+     will move this onto the previous line with the boolean expression.  It's
+     better to use curly braces `{}` on every `then` clause, `else` clause,
+     and `for`/`while` body.  To find the poor reformatting (regexps in Emacs
+     syntax):
 
-         * Search for occurrences of `^\+.*\) return `.
-         * Search for occurrences of `^\+.*\(if\|while\|for\) (.*) [^{]`.
-         * Search for hunks that have fewer `+` than `-` lines.
+       * Search for occurrences of `^\+.*\) return `.
+       * Search for occurrences of `^\+.*\(if\|while\|for\) (.*) [^{]`.
+       * Search for hunks that have fewer `+` than `-` lines.
 
-       Add curly braces to get the body back on its own line.
+     Add curly braces to get the body back on its own line.
 
-     * Formatted Javadoc.  To preserve line breaks and horizontal formatting,
-       you may wish to enclose parts of your Javadoc comments in `<pre>...</pre>`
-       or use `<ul>` to format lists.
+   * Formatted Javadoc.  To preserve line breaks and horizontal formatting,
+     you may wish to enclose parts of your Javadoc comments in `<pre>...</pre>`
+     or use `<ul>` to format lists.
 
    (You can work in the branch where you are doing reformatting.
    Alternately, you might want to change your source code in the master
