@@ -2,16 +2,18 @@
 
 This repository contains the `run-google-java-format.py` and
 `check-google-java-format.py` scripts.
-They automatically download and run google-java-format,
+They automatically download and run
+[google-java-format](https://github.com/google/google-java-format),
 they slightly improve its output, and they add checking functionality.
 
 The [google-java-format](https://github.com/google/google-java-format)
 program reformats Java source code, but has some disadvantages:
- * It's inconvenient to install, and you have to remember to update your installation periodically.
- * To reformat code, it requires a long, hard-to-remember command line.
- * It cannot check whether a file is properly formatted, which is desirable in a pre-commit hook.
  * It creates poor formatting for type annotations.
  * It creates poor formatting for [annotations in comments](https://types.cs.washington.edu/checker-framework/current/checker-framework-manual.html#annotations-in-comments).
+ * ~~It cannot check whether a file is properly formatted, which is desirable in a pre-commit hook.~~
+   Version 1.5 can do this, but not everyone is ready to upgrade to that version.  (One reason is that version 1.4 and later wrap long `//` comments, so upgrading past 1.3 requires a one-time investment of time to fix formatting problems.)
+ * To reformat code requires a long, hard-to-remember command line.
+ * You have to remember to update your installation periodically.
 
 The `run-google-java-format.py` and `check-google-java-format.py` scripts correct these problems.
 
