@@ -49,6 +49,14 @@ There are two ways to install and use these scripts:
    needed files.
 
 
+## Customization
+
+To control which version of google-java-format to use,
+set environment variable `GJF_VERSION`.  For example:
+
+```expert GJF_VERSION=1.3```
+
+
 ## Integrating with a build system
 
 Add the following targets to your build system.
