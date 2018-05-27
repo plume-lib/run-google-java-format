@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 
 # This script reformats each file supplied on the command line according to
 # the Google Java style (by calling out to the google-java-format program,
