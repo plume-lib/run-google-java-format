@@ -13,7 +13,11 @@ import stat
 import subprocess
 import sys
 import tempfile
-import urllib
+
+try:
+    from urllib import urlretrieve
+except ImportError:
+    from urllib.request import urlretrieve
 
 debug = False
 # debug = True
@@ -48,7 +52,7 @@ elif os.path.isfile(os.path.join(os.path.dirname(script_dir), "lib", gjf_jar_nam
 else:
     gjf_jar_path = os.path.join(script_dir, gjf_jar_name)
     # print("retrieving " + gjf_url + " to " + gjf_jar_path)
-    urllib.urlretrieve(gjf_url, gjf_jar_path)
+    urlretrieve(gjf_url, gjf_jar_path)
 
 # For some reason, the "git ls-files" must be run from the root.
 # (I can run "git ls-files" from the command line in any directory.)
@@ -70,7 +74,7 @@ def under_git(dir, filename):
 # But raw GitHub URLs don't have the necessary last-modified information.
 if not under_git(script_dir, "fixup-google-java-format.py"):
     try:
-        urllib.urlretrieve("https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/fixup-google-java-format.py", fixup_py)
+        urlretrieve("https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/fixup-google-java-format.py", fixup_py)
     except:
         if os.path.exists(fixup_py):
             print("Couldn't retrieve fixup-google-java-format.py; using cached version")
