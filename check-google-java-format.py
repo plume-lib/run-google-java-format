@@ -22,7 +22,12 @@ import stat
 import subprocess
 import sys
 import tempfile
-import urllib
+
+
+try:
+    from urllib import urlretrieve # python 2
+except ImportError:
+    from urllib.request import urlretrieve # python 3
 
 debug = False
 # debug = True
@@ -49,7 +54,7 @@ def under_git(dir, filename):
 # It would be better to just test whether the remote is newer than local,
 # But raw GitHub URLs don't have the necessary last-modified information.
 if not under_git(script_dir, "run-google-java-format.py"):
-    urllib.urlretrieve("https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/run-google-java-format.py", run_py)
+    urlretrieve("https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/run-google-java-format.py", run_py)
     os.chmod(run_py, os.stat(run_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 temp_dir = tempfile.mkdtemp(prefix='check-google-java-format-')
