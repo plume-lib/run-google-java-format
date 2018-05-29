@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 # The google-java-format program (https://github.com/google/google-java-format)
 # reformats Java source code, but it creates poor formatting for annotations

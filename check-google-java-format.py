@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 # This script checks whether the files supplied on the command line conform
 # to the Google Java style (as enforced by the google-java-format program,
@@ -26,8 +26,10 @@ import tempfile
 
 try:
     from urllib import urlretrieve
+    # python 2
 except ImportError:
     from urllib.request import urlretrieve
+    # python 3
 
 debug = False
 # debug = True

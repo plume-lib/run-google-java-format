@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 # This script reformats each file supplied on the command line according to
 # the Google Java style (by calling out to the google-java-format program,
@@ -16,8 +16,10 @@ import tempfile
 
 try:
     from urllib import urlretrieve
+    # python 2
 except ImportError:
     from urllib.request import urlretrieve
+    # python 3
 
 debug = False
 # debug = True
