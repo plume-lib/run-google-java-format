@@ -25,11 +25,9 @@ import tempfile
 
 
 try:
-    from urllib import urlretrieve
-    # python 2
+    from urllib import urlretrieve # python 2
 except ImportError:
-    from urllib.request import urlretrieve
-    # python 3
+    from urllib.request import urlretrieve # python 3
 
 debug = False
 # debug = True
