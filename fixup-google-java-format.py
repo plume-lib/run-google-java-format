@@ -25,7 +25,7 @@ def eprint(*args, **kwargs):
 # These are annotations that should not go on their own line.
 # They are type annotations: their @Target annotation contains "TYPE_USE".
 # To generate this list:
-#   ag --file-search-regex 'src/org/checkerframework|docs/examples/units-extension|framework/tests' --files-with-matches '^@Target\b.*TYPE_USE' $cf | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq
+#   ag --file-search-regex 'src/main/java/org/checkerframework|docs/examples/units-extension|framework/src/test/java' --files-with-matches '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq
 typeAnnotations = set([
     "A",
     "ACCBottom",
@@ -33,7 +33,6 @@ typeAnnotations = set([
     "ACCTop",
     "AlwaysSafe",
     "Angle",
-    "AnnotatedAnnotation",
     "AnnoWithStringArg",
     "Area",
     "ArrayLen",
@@ -68,7 +67,6 @@ typeAnnotations = set([
     "D",
     "DefaultType",
     "degrees",
-    "Dependent",
     "DoubleVal",
     "E",
     "Encrypted",
@@ -119,6 +117,7 @@ typeAnnotations = set([
     "IndexOrLow",
     "Initialized",
     "InternalForm",
+    "InternalFormForNonArray",
     "Interned",
     "InternedDistinct",
     "IntRange",
@@ -133,11 +132,14 @@ typeAnnotations = set([
     "km",
     "km2",
     "kmPERh",
+    "LbTop",
     "LB_TOP",
     "LeakedToResult",
     "Length",
     "LengthOf",
-    "Linear",
+    "LessThan",
+    "LessThanBottom",
+    "LessThanUnknown",
     "LocalizableKey",
     "LocalizableKeyBottom",
     "Localized",
@@ -171,7 +173,6 @@ typeAnnotations = set([
     "NonNull",
     "NonNullType",
     "NonRaw",
-    "Normal",
     "NotNull",
     "NotQualifier",
     "NTDBottom",
@@ -262,6 +263,7 @@ typeAnnotations = set([
     "Temperature",
     "Time",
     "Top",
+    "UbTop",
     "UB_TOP",
     "UI",
     "UnderInitialization",
@@ -282,7 +284,6 @@ typeAnnotations = set([
     "UnknownVal",
     "Unsigned",
     "Untainted",
-    "Unusable",
     "UpperBoundBottom",
     "UpperBoundUnknown",
     "Value",
