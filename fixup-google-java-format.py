@@ -24,8 +24,10 @@ def eprint(*args, **kwargs):
 
 # These are annotations that should not go on their own line.
 # They are type annotations: their @Target annotation contains "TYPE_USE".
+# This includes private type annotations used for testing, to keep the Checker
+# Framework test source code looking nice.
 # To generate this list:
-#   ag --file-search-regex 'src/main/java/org/checkerframework|docs/examples/units-extension|framework/src/test/java' --files-with-matches '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq
+#   grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK/checker/src/main/java  $CHECKERFRAMEWORK/framework/src/main/java $CHECKERFRAMEWORK/docs/examples/units-extension $CHECKERFRAMEWORK/framework/src/test/java | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq > type-qualifiers.txt
 typeAnnotations = set([
     "A",
     "ACCBottom",
@@ -43,8 +45,6 @@ typeAnnotations = set([
     "AwtFlowLayout",
     "B",
     "BinaryName",
-    "BinaryNameForNonArray",
-    "BinaryNameForNonArrayInUnnamedPackage",
     "BinaryNameInUnnamedPackage",
     "BoolVal",
     "Bottom",
@@ -67,6 +67,7 @@ typeAnnotations = set([
     "D",
     "DefaultType",
     "degrees",
+    "DotSeparatedIdentifiers",
     "DoubleVal",
     "E",
     "Encrypted",
@@ -79,7 +80,8 @@ typeAnnotations = set([
     "FenumTop",
     "FETop",
     "FieldDescriptor",
-    "FieldDescriptorForArray",
+    "FieldDescriptorForPrimitive",
+    "FieldDescriptorForPrimitiveOrArrayInUnnamedPackage",
     "FlowExp",
     "Format",
     "FormatBottom",
@@ -117,7 +119,6 @@ typeAnnotations = set([
     "IndexOrLow",
     "Initialized",
     "InternalForm",
-    "InternalFormForNonArray",
     "Interned",
     "InternedDistinct",
     "IntRange",
@@ -240,8 +241,6 @@ typeAnnotations = set([
     "SignatureBottom",
     "Signed",
     "SignednessBottom",
-    "SourceNameForNonArrayNonInner",
-    "SourceNameForNonInner",
     "Speed",
     "StringVal",
     "SubQual",
