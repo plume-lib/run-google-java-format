@@ -27,7 +27,7 @@ def eprint(*args, **kwargs):
 # This includes private type annotations used for testing, to keep the Checker
 # Framework test source code looking nice.
 # To generate this list:
-#   grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK/checker/src/main/java  $CHECKERFRAMEWORK/framework/src/main/java $CHECKERFRAMEWORK/docs/examples/units-extension $CHECKERFRAMEWORK/framework/src/test/java | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq > type-qualifiers.txt
+#   grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK/checker/src/main/java  $CHECKERFRAMEWORK/framework/src/main/java $CHECKERFRAMEWORK/docs/examples/units-extension $CHECKERFRAMEWORK/framework/src/test/java | grep -v '~' | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq > type-qualifiers.txt
 typeAnnotations = set([
     "A",
     "ACCBottom",
@@ -67,6 +67,7 @@ typeAnnotations = set([
     "D",
     "DefaultType",
     "degrees",
+    "Det",
     "DotSeparatedIdentifiers",
     "DoubleVal",
     "E",
@@ -169,6 +170,7 @@ typeAnnotations = set([
     "mPERs",
     "mPERs2",
     "NegativeIndexFor",
+    "NonDet",
     "NonLeaked",
     "NonNegative",
     "NonNull",
@@ -183,6 +185,7 @@ typeAnnotations = set([
     "Nullable",
     "NullableType",
     "Odd",
+    "OrderNonDet",
     "Parent",
     "PatternA",
     "PatternAB",
@@ -195,6 +198,7 @@ typeAnnotations = set([
     "PatternUnknown",
     "Poly",
     "PolyAll",
+    "PolyDet",
     "PolyEncrypted",
     "PolyFenum",
     "PolyIndex",
