@@ -177,6 +177,9 @@ Then, add this:
 
 ### Gradle `build.gradle`
 
+Customize per your requirements, such as changing or remoning the
+`-not -path` lines.
+
 ```
 task getCodeFormatScripts(type: Exec) {
   description "Obtain the run-google-java-format scripts"
