@@ -177,39 +177,63 @@ Then, add this:
 
 ### Gradle `build.gradle`
 
-Customize per your requirements, such as changing or remoning the
-`-not -path` lines.
+Customize per your requirements, such as excluding generated `.java` files from formatting.
 
 ```
-task getCodeFormatScripts(type: Exec) {
+plugins {
+  id 'org.ajoberstar.grgit' version '2.3.0' apply false
+}
+
+import org.ajoberstar.grgit.Grgit
+
+repositories {
+  jcenter()
+}
+
+task getCodeFormatScripts {
   description "Obtain the run-google-java-format scripts"
-  commandLine "bash", "-c", "(cd .run-google-java-format && git pull -q)" +
-          " || " +
-          "git clone -q https://github.com/plume-lib/run-google-java-format.git .run-google-java-format"
+  doLast {
+    if (! new File("$projectDir/.run-google-java-format").exists()) {
+      def rgjfGit = Grgit.clone(dir: "$projectDir/.run-google-java-format", uri: 'https://github.com/plume-lib/run-google-java-format.git')
+    } else {
+      def rgjfGit = Grgit.open(dir: "$projectDir/.run-google-java-format")
+      rgjfGit.pull()
+    }
+  }
 }
 
-task checkFormat(type: Exec) {
-  description "Check whether the source code is properly formatted"
-  commandLine "bash", "-c", "find src -name \"*.java\" -type f " +
-          "-not -path \"src/test/resources/src/*\" " +
-          "-not -path \"src/test/resources/aspects/*\" " +
-          "-not -path \"src/main/resources/AspectTemplate.java\" " +
-          "| xargs ./.run-google-java-format/check-google-java-format.py " +
-          "|| (echo 'Try running:  gradle reformat' && false)"
+task pythonIsInstalled(type: Exec) {
+  description "Check that the python executable is installed."
+  executable = "python"
+  args "--version"
 }
-checkFormat.dependsOn getCodeFormatScripts
-build.dependsOn checkFormat
 
-/* Format the code according to the Google Java format code style */
-task reformat(type: Exec) {
-  description "Format the Java source code"
-  commandLine "bash", "-c", "find src -name \"*.java\" -type f " +
-          "-not -path \"src/test/resources/src/*\" " +
-          "-not -path \"src/test/resources/aspects/*\" " +
-          "-not -path \"src/main/resources/AspectTemplate.java\" " +
-          "| xargs ./.run-google-java-format/run-google-java-format.py"
+task checkFormat(type: Exec, dependsOn: [getCodeFormatScripts, pythonIsInstalled], group: 'Formatting') {
+  description "Check whether the Java source code is properly formatted"
+  def javaFiles = fileTree("$projectDir").matching{ include "**/*.java" } as List
+  def pythonArgs = javaFiles.clone()
+  pythonArgs.add(0, "$projectDir/.run-google-java-format/check-google-java-format.py")
+
+  commandLine "python"
+  args pythonArgs
+  ignoreExitValue true
+
+  doLast {
+    if (execResult.exitValue != 0) {
+      throw new GradleException("Found improper formatting, try running:  ./gradlew reformat")
+    }
+  }
 }
-reformat.dependsOn getCodeFormatScripts
+
+task reformat(type: Exec, dependsOn: [getCodeFormatScripts, pythonIsInstalled], group: 'Formatting') {
+  description "Format the Java source code according to the Google Java Format style"
+  def javaFiles = fileTree("$projectDir").matching{ include "**/*.java" } as List
+  def pythonArgs = javaFiles.clone()
+  pythonArgs.add(0, "$projectDir/.run-google-java-format/run-google-java-format.py")
+
+  commandLine "python"
+  args pythonArgs
+}
 ```
 
 
