@@ -12,9 +12,9 @@ this project (run-google-java-format) improves it:
  * This project creates better formatting for [type annotations](https://github.com/google/google-java-format/issues/5).
  * This project creates better formatting for [annotations in comments](https://types.cs.washington.edu/checker-framework/current/checker-framework-manual.html#annotations-in-comments).
  * This project can check whether a file is properly formatted, which is desirable in a pre-commit hook.
-   (Update Version 1.5 of GJF can do this, but not everyone is ready to upgrade to that version.  One reason is that versions 1.2 and later require Java 8.
-   Another reason is that version 1.4 and later wrap long `//` comments, so upgrading past 1.3 requires a one-time investment of time to fix formatting problems.)
- * This project has a handy scrip to reformat code; by contrast, GJF requires a long, hard-to-remember command line.
+   (Update: Version 1.5 of GJF can do this, but not everyone is ready to upgrade to that version.  One reason is that versions 1.2 and later require Java 8.
+   Another reason is that version 1.4 and later wrap long `//` comments, so upgrading past 1.3 requires a one-time investment of time to adjust comment formatting.)
+ * This project has a handy script to reformat code; by contrast, GJF requires a long, hard-to-remember command line.
  * This project is periodically updated; by contrast, you have to remember to update your GJF installation periodically.
 
 The `run-google-java-format.py` and `check-google-java-format.py` scripts provide these enhancements over plain google-java-format.
@@ -64,7 +64,7 @@ set environment variable `GJF_VERSION`.  For example:
 Add the following targets to your build system.
 
 Integration with other build systems is similar.  (Feel free to contribute
-concrete exmaples for build systems that are not listed here.)
+concrete examples for build systems that are not listed here.)
 
 Some of these commands have only been tested on Unix;
 if you can create a version that also works on Windows, please contribute it.
