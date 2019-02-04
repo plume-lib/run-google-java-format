@@ -29,7 +29,7 @@ fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 
 ## To use an officially released version.
 # Version 1.3 and earlier do not wrap line comments.
-gjf_version = os.getenv("GJF_VERSION", "1.6")
+gjf_version = os.getenv("GJF_VERSION", "1.7")
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
 gjf_url_base = os.getenv("GJF_URL_BASE", "https://github.com/google/google-java-format/releases/download/google-java-format-" + gjf_version + "/")
 ## To use a non-official version by default, because an official version is

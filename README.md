@@ -15,7 +15,7 @@ this project (run-google-java-format) improves it:
    (Update: Version 1.5 of GJF can do this, but not everyone is ready to upgrade to that version.  One reason is that versions 1.2 and later require Java 8.
    Another reason is that version 1.4 and later wrap long `//` comments, so upgrading past 1.3 requires a one-time investment of time to adjust comment formatting.)
  * This project has a handy script to reformat code; by contrast, GJF requires a long, hard-to-remember command line.
- * This project is periodically updated; by contrast, you have to remember to update your GJF installation periodically.
+ * This project is periodically updated; by contrast, you have to remember to update your GJF installation periodically.  (You can also control which version is used; see "Customization" below.)
 
 The `run-google-java-format.py` and `check-google-java-format.py` scripts provide these enhancements over plain google-java-format.
 
