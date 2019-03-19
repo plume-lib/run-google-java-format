@@ -180,24 +180,21 @@ Then, add this:
 Customize per your requirements, such as excluding generated `.java` files from formatting.
 
 ```
-plugins {
-  id 'org.ajoberstar.grgit' version '2.3.0' apply false
-}
-
-import org.ajoberstar.grgit.Grgit
-
-repositories {
-  jcenter()
-}
-
 task getCodeFormatScripts {
   description "Obtain the run-google-java-format scripts"
   doLast {
-    if (! new File("$projectDir/.run-google-java-format").exists()) {
-      def rgjfGit = Grgit.clone(dir: "$projectDir/.run-google-java-format", uri: 'https://github.com/plume-lib/run-google-java-format.git')
+    def rgjfDir = "$projectDir/.run-google-java-format"
+    if (! new File(rgjfDir).exists()) {
+      exec {
+        commandLine 'git', 'clone', '--depth', '1', "https://github.com/plume-lib/run-google-java-format.git", rgjfDir
+      }
     } else {
-      def rgjfGit = Grgit.open(dir: "$projectDir/.run-google-java-format")
-      rgjfGit.pull()
+      // Ignore exit value so this does not halt the build when not connected to the Internet.
+      exec {
+        workingDir rgjfDir
+        ignoreExitValue true
+        commandLine 'git', 'pull', '-q'
+      }
     }
   }
 }
@@ -235,6 +232,37 @@ task reformat(type: Exec, dependsOn: [getCodeFormatScripts, pythonIsInstalled], 
   args pythonArgs
 }
 ```
+
+<!--
+It ought to be possible to replace the `getCodeFormatScripts` task above
+with the below, but DO NOT DO SO because in some cases it corrupts your
+repository by writing over the top-level .git file rather than creating a
+new .git file in directory in the .run-google-java-format directory
+
+
+plugins {
+  id 'org.ajoberstar.grgit' version '2.3.0' apply false
+}
+
+import org.ajoberstar.grgit.Grgit
+
+repositories {
+  jcenter()
+}
+
+task getCodeFormatScripts {
+  description "Obtain the run-google-java-format scripts"
+  doLast {
+    def rgjfDir = "$projectDir/.run-google-java-format"
+    if (! new File(rgjfDir).exists()) {
+      def rgjfGit = Grgit.clone(dir: rgjfDir, uri: 'https://github.com/plume-lib/run-google-java-format.git')
+    } else {
+      def rgjfGit = Grgit.open(dir: rgjfDir)
+      rgjfGit.pull()
+    }
+  }
+}
+-->
 
 
 ### Git pre-commit hook
