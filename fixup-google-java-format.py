@@ -86,6 +86,7 @@ typeAnnotations = set([
     "FlowExp",
     "Format",
     "FormatBottom",
+    "FqBinaryName",
     "Frequency",
     "FullyQualifiedName",
     "g",
