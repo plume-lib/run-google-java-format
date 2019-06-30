@@ -18,7 +18,7 @@ jobs:
           paths:
             - ".git"
 
-      - run: echo "TODO: add some tests"
+      - run: echo "TODO add some tests"
 
 workflows:
   version: 2
