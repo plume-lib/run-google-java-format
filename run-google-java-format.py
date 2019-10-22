@@ -52,7 +52,11 @@ elif os.path.isfile(os.path.join(os.path.dirname(script_dir), "lib", gjf_jar_nam
 else:
     gjf_jar_path = os.path.join(script_dir, gjf_jar_name)
     # print("retrieving " + gjf_url + " to " + gjf_jar_path)
-    urlretrieve(gjf_url, gjf_jar_path)
+    try:
+        urlretrieve(gjf_url, gjf_jar_path)
+    except:
+        print("Problem while retrieving " + gjf_url + " to " + gjf_jar_path)
+        raise
 
 # For some reason, the "git ls-files" must be run from the root.
 # (I can run "git ls-files" from the command line in any directory.)
