@@ -12,10 +12,9 @@ this project (run-google-java-format) improves it:
  * This project creates better formatting for [type annotations](https://github.com/google/google-java-format/issues/5).
  * This project creates better formatting for [annotations in comments](https://types.cs.washington.edu/checker-framework/current/checker-framework-manual.html#annotations-in-comments).
  * This project can check whether a file is properly formatted, which is desirable in a pre-commit hook.
-   (Update: Version 1.5 of GJF can do this, but not everyone is ready to upgrade to that version.  One reason is that versions 1.2 and later require Java 8.
-   Another reason is that version 1.4 and later wrap long `//` comments, so upgrading past 1.3 requires a one-time investment of time to adjust comment formatting.)
+   (Update: Version 1.5 of GJF can do this, but it is not cognizant of the better formatting that this project does.)
  * This project has a handy script to reformat code; by contrast, GJF requires a long, hard-to-remember command line.
- * This project is periodically updated; by contrast, you have to remember to update your GJF installation periodically.  (You can also control which version is used; see "Customization" below.)
+ * You can run this project in a way that automatically uses the latest version of GJF, if you wish, without having to remember to update your GJF installation periodically.  (You can also control which version of GJF this project uses; see "Customization" below.)
 
 The `run-google-java-format.py` and `check-google-java-format.py` scripts provide these enhancements over plain google-java-format.
 
