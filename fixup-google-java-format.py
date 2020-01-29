@@ -321,6 +321,17 @@ abuttingannoRegex = re.compile(r"(/\*@[A-Za-z0-9_]+\*/)(\[\]|/\*@[A-Za-z0-9_]+\*
 # Voodoo annotation with extra space after
 voodootrailingspaceRegex = re.compile(r"(/\*>>> ?@.*\bthis\*/) (\))")
 
+# Matches the argument to an annotation.
+# 3 cases:
+#   ()
+#   (".*")
+#   (.*)
+# The regex tries to safely permit "()" within a string in an annotation, such as
+#   @GuardedBy("c1.getFieldPure2()")
+annoargRegex = r'(?: *(?:\( *\)|\( *"[^"]*" *\)|\([^")][^)]*\)))?'
+# Matches an annotation
+annoRegex = r"@[A-Za-z0-9_.]+" + annoargRegex
+
 # Matches, at the end of its line (in capturing group 2):
 #  * An annotation
 #    This is a bit dangerous!  It might be within a comment.
@@ -332,9 +343,7 @@ voodootrailingspaceRegex = re.compile(r"(/\*>>> ?@.*\bthis\*/) (\))")
 #    https://github.com/google/google-java-format/commit/ca0c4d90cdbb46b3a2bf9c2b83d0bd558cccc41e )
 # The annotation will be moved to the beginning of the following line,
 # if it appears in typeAnnotations.
-# The regex does not permit "()" within a string in an annotation, such as
-#   @GuardedBy("c1.getFieldPure2()")
-trailingannoRegex = re.compile(r"^(.*?)[ \t]*(@[A-Za-z0-9_.]+( *\([^)]*\))?|/\*@[A-Za-z0-9_.]+( *\([^)]*\))?\*/|/\* *[A-Za-z0-9_]+ *= *\*/)$")
+trailingannoRegex = re.compile(r"^(.*?)[ \t]*(" + annoRegex + r"|/\*" + annoRegex + r"\*/|/\* *[A-Za-z0-9_]+ *= *\*/)$")
 
 whitespaceRegex = re.compile(r"^([ \t]*).*$")
 
