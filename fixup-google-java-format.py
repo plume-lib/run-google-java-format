@@ -22,12 +22,12 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-# These are annotations that should not go on their own line.
-# They are type annotations: their @Target annotation contains "TYPE_USE".
+# These are type annotations, which should NOT go on their own line.
+# A type annotation's @Target annotation contains "TYPE_USE".
 # This includes private type annotations used for testing, to keep the Checker
 # Framework test source code looking nice.
 # To generate this list:
-#   grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK/checker/src/main/java  $CHECKERFRAMEWORK/framework/src/main/java $CHECKERFRAMEWORK/docs/examples/units-extension $CHECKERFRAMEWORK/framework/src/test/java | grep -v '~' | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq > type-qualifiers.txt
+#   grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK/checker/src/main/java $CHECKERFRAMEWORK/framework/src/main/java $CHECKERFRAMEWORK/docs/examples/units-extension $CHECKERFRAMEWORK/framework/src/test/java $t/object-construction-checker | grep -v '~' | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq > type-qualifiers.txt
 typeAnnotations = set([
     "A",
     "ACCBottom",
@@ -49,8 +49,13 @@ typeAnnotations = set([
     "BoolVal",
     "Bottom",
     "BottomQualifier",
+    "BottomThis",
     "BottomVal",
     "C",
+    "CalledMethods",
+    "CalledMethodsBottom",
+    "CalledMethodsPredicate",
+    "CalledMethodsTop",
     "CCBottom",
     "CCTop",
     "cd",
@@ -157,6 +162,7 @@ typeAnnotations = set([
     "Mass",
     "MaybeAliased",
     "MaybePresent",
+    "MaybeThis",
     "MethodDescriptor",
     "MethodVal",
     "MethodValBottom",
@@ -268,9 +274,11 @@ typeAnnotations = set([
     "SwingVerticalOrientation",
     "Tainted",
     "Temperature",
+    "This",
     "Time",
     "Top",
     "TypeDeclDefaultBottom",
+    "TypeDeclDefaultMiddle",
     "TypeDeclDefaultTop",
     "UbTop",
     "UB_TOP",
@@ -280,6 +288,7 @@ typeAnnotations = set([
     "UnitsBottom",
     "UnknownClass",
     "UnknownCompilerMessageKey",
+    "UnknownFormat",
     "UnknownInitialization",
     "UnknownInterned",
     "UnknownKeyFor",
