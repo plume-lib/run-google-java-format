@@ -1,14 +1,14 @@
 #!/usr/bin/python
+"""The google-java-format program (https://github.com/google/google-java-format)
+reformats Java source code, but it creates poor formatting for annotations
+in comments.
+Run this script on files after running google-java-format, and it will perform
+small changes in place to improve formatting of annotations in comments.
+If called with no arguments, it reads from and writes to standard output.
 
-# The google-java-format program (https://github.com/google/google-java-format)
-# reformats Java source code, but it creates poor formatting for annotations
-# in comments.
-# Run this script on files after running google-java-format, and it will perform
-# small changes in place to improve formatting of annotations in comments.
-# If called with no arguments, it reads from and writes to standard output.
-#
-# You typically will not run this program directly; it is run by
-# run-google-java-format.py.
+You typically will not run this program directly; it is run by
+run-google-java-format.py.
+"""
 
 from __future__ import print_function
 
@@ -17,10 +17,13 @@ import os.path
 import re
 import sys
 
+
 def eprint(*args, **kwargs):
     "Print to standard error"
     print(*args, file=sys.stderr, **kwargs)
 
+
+# pylint: disable=line-too-long, multiple-statements
 
 # These are type annotations, which should NOT go on their own line.
 # A type annotation's @Target annotation contains "TYPE_USE".
@@ -343,7 +346,8 @@ annoRegex = r"@[A-Za-z0-9_.]+" + annoargRegex
 #    https://github.com/google/google-java-format/commit/ca0c4d90cdbb46b3a2bf9c2b83d0bd558cccc41e )
 # The annotation will be moved to the beginning of the following line,
 # if it appears in typeAnnotations.
-trailingannoRegex = re.compile(r"^(.*?)[ \t]*(" + annoRegex + r"|/\*" + annoRegex + r"\*/|/\* *[A-Za-z0-9_]+ *= *\*/)$")
+trailingannoRegex = re.compile(r"^(.*?)[ \t]*(" + annoRegex + r"|/\*" + annoRegex +
+                               r"\*/|/\* *[A-Za-z0-9_]+ *= *\*/)$")
 
 whitespaceRegex = re.compile(r"^([ \t]*).*$")
 
@@ -354,6 +358,7 @@ withinCommentRegex = re.compile(r"//|/\*(?!.*\/*/)|^[ \t]*\*[ \t]")
 
 startsWithCommentRegex = re.compile(r"^[ \t]*(//|/\*$|/\*[^@]|\*|void\b)")
 
+
 def insert_after_whitespace(insertion, s):
     """Return s, with insertion inserted after its leading whitespace."""
     m = re.match(whitespaceRegex, s)
@@ -362,7 +367,7 @@ def insert_after_whitespace(insertion, s):
 
 def fixup_loop(infile, outfile):
     """Fix up formatting while reading from infile and writing to outfile."""
-    prev = ""           # previous line, which might end with a type annotation.
+    prev = ""  # previous line, which might end with a type annotation.
     for line in infile:
         # Handle trailing space after a voodoo comment
         line = voodootrailingspaceRegex.sub(r"\1\2", line)
@@ -373,7 +378,7 @@ def fixup_loop(infile, outfile):
             line = line[0:m.end(1)] + " " + line[m.start(2):]
             m = re.search(abuttingannoRegex, line)
         # Don't move an annotation to the start of a comment line
-        if (re.search(startsWithCommentRegex, line)):
+        if re.search(startsWithCommentRegex, line):
             m = None
             if debug: print("Don't prepend to comment", prev, line)
         else:
@@ -406,6 +411,7 @@ def fixup_loop(infile, outfile):
         prev = line
     outfile.write(prev)
 
+
 def base_annotation(annotation):
     """Remove leading and trailing comment characters, spaces, arguments, and at sign.
 Example: base_annotation('/*@RequiresNonNull("FileIO.data_trace_state")*/' => 'RequiresNonNull'"""
@@ -425,7 +431,7 @@ Example: base_annotation('/*@RequiresNonNull("FileIO.data_trace_state")*/' => 'R
     # Remove package names
     idx = annotation.rfind('.')
     if idx != -1:
-        annotation = annotation[idx+1:]
+        annotation = annotation[idx + 1:]
 
     annotation = annotation.strip()
     if annotation.startswith("@"):
@@ -439,7 +445,7 @@ if len(sys.argv) == 1:
 else:
     for fname in sys.argv[1:]:
         outfname = fname + '.out'
-        with open(fname,'r') as infile:
-            with open(outfname ,'w') as outfile:
+        with open(fname, 'r') as infile:
+            with open(outfname, 'w') as outfile:
                 fixup_loop(infile, outfile)
         os.rename(outfname, fname)

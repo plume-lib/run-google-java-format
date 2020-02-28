@@ -1,9 +1,10 @@
 #!/usr/bin/python
-
-# This script reformats each file supplied on the command line according to
-# the Google Java style (by calling out to the google-java-format program,
-# https://github.com/google/google-java-format), but with improvements to
-# the formatting of annotations in comments.
+"""
+This script reformats each file supplied on the command line according to
+the Google Java style (by calling out to the google-java-format program,
+https://github.com/google/google-java-format), but with improvements to
+the formatting of annotations in comments.
+"""
 
 from __future__ import print_function
 from distutils import spawn
@@ -15,9 +16,9 @@ import sys
 import tempfile
 
 try:
-    from urllib import urlretrieve # python 2
+    from urllib import urlretrieve  # python 2
 except ImportError:
-    from urllib.request import urlretrieve # python 3
+    from urllib.request import urlretrieve  # python 3
 
 debug = False
 # debug = True
@@ -31,7 +32,10 @@ fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 # Version 1.3 and earlier do not wrap line comments.
 gjf_version = os.getenv("GJF_VERSION", "1.7")
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
-gjf_url_base = os.getenv("GJF_URL_BASE", "https://github.com/google/google-java-format/releases/download/google-java-format-" + gjf_version + "/")
+gjf_url_base = os.getenv(
+    "GJF_URL_BASE",
+    "https://github.com/google/google-java-format/releases/download/google-java-format-" +
+    gjf_version + "/")
 ## To use a non-official version by default, because an official version is
 ## unusably buggy (like 1.1) or no new release has been made in a long time.
 ## Never change the file at a URL; make it unique by adding a date.
@@ -58,6 +62,7 @@ else:
         print("Problem while retrieving " + gjf_url + " to " + gjf_jar_path)
         raise
 
+
 # For some reason, the "git ls-files" must be run from the root.
 # (I can run "git ls-files" from the command line in any directory.)
 def under_git(dir, filename):
@@ -67,18 +72,24 @@ def under_git(dir, filename):
             print("no git executable found")
         return False
     FNULL = open(os.devnull, 'w')
-    p = subprocess.Popen(["git", "ls-files", filename, "--error-unmatch"], cwd=dir, stdout=FNULL, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(["git", "ls-files", filename, "--error-unmatch"],
+                         cwd=dir,
+                         stdout=FNULL,
+                         stderr=subprocess.STDOUT)
     p.wait()
     if debug:
         print("p.returncode", p.returncode)
     return p.returncode == 0
+
 
 # Don't replace local with remote if local is under version control.
 # It would be better to just test whether the remote is newer than local,
 # But raw GitHub URLs don't have the necessary last-modified information.
 if not under_git(script_dir, "fixup-google-java-format.py"):
     try:
-        urlretrieve("https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/fixup-google-java-format.py", fixup_py)
+        urlretrieve(
+            "https://raw.githubusercontent.com/" +
+            "plume-lib/run-google-java-format/master/fixup-google-java-format.py", fixup_py)
     except:
         if os.path.exists(fixup_py):
             print("Couldn't retrieve fixup-google-java-format.py; using cached version")
@@ -112,7 +123,8 @@ files = [f for f in files if not f.startswith("-")]
 if not files:
     sys.exit(0)
 
-if debug: print("Running fixup-google-java-format.py")
+if debug:
+    print("Running fixup-google-java-format.py")
 result = subprocess.call([fixup_py] + files)
 if result != 0:
     print("Error when running fixup-google-java-format.py")
