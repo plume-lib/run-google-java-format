@@ -313,10 +313,17 @@ typeAnnotations = set([
 
 # File .type-annotations can add to the typeAnnotations variable.
 if os.path.isfile(".type-annotations"):
-    execfile('execfile_example.py')
+    # pylint: disable=bad-whitespace
+    exec (open(".type-annotations").read())
 
 debug = False
 # debug = True
+
+
+def debug_print(*args, **kwargs):
+    """Print, only if the debug variable is set."""
+    if debug: print(*args, **kwargs)
+
 
 # Two annotations in a row, or an annotation abutting array brackets "[]".
 # Space is inserted between.
@@ -374,39 +381,39 @@ def fixup_loop(infile, outfile):
         # Handle abutting annotations in comments
         m = re.search(abuttingannoRegex, line)
         while m:
-            if debug: print("found abutting", line)
+            debug_print("found abutting", line)
             line = line[0:m.end(1)] + " " + line[m.start(2):]
             m = re.search(abuttingannoRegex, line)
         # Don't move an annotation to the start of a comment line
         if re.search(startsWithCommentRegex, line):
             m = None
-            if debug: print("Don't prepend to comment", prev, line)
+            debug_print("Don't prepend to comment", prev, line)
         else:
             # Handle annotations at end of line that should be at beginning of
             # next line.
             m = re.search(trailingannoRegex, prev)
-            if debug: print("trailing? (pre-loop)", m, prev, line)
+            debug_print("trailing? (pre-loop)", m, prev, line)
         while m:
-            if debug: print("found trailing", prev, line)
+            debug_print("found trailing", prev, line)
             anno = m.group(2)
             if not base_annotation(anno) in typeAnnotations:
                 break
-            if debug: print("prev was:", prev)
+            debug_print("prev was:", prev)
             candidate_prev = prev[0:m.end(1)] + prev[m.end(2):]
-            if debug: print("candidate_prev is :", candidate_prev)
+            debug_print("candidate_prev is :", candidate_prev)
             if re.search(withinCommentRegex, candidate_prev):
-                if debug: print("withinCommentRegex prohibits action")
+                debug_print("withinCommentRegex prohibits action")
                 break
             prev = candidate_prev
-            if debug: print("prev is:", prev)
+            debug_print("prev is:", prev)
             if re.search(emptylineRegex, prev):
                 prev = ""
-                if debug: print("prev is empty")
-            if debug: print("line was:", line)
+                debug_print("prev is empty")
+            debug_print("line was:", line)
             line = insert_after_whitespace(anno + " ", line)
-            if debug: print("line is :", line)
+            debug_print("line is :", line)
             m = re.search(trailingannoRegex, prev)
-            if debug: print("trailing? (post-loop-body)", m, prev, line)
+            debug_print("trailing? (post-loop-body)", m, prev, line)
         outfile.write(prev)
         prev = line
     outfile.write(prev)
@@ -415,7 +422,7 @@ def fixup_loop(infile, outfile):
 def base_annotation(annotation):
     """Remove leading and trailing comment characters, spaces, arguments, and at sign.
 Example: base_annotation('/*@RequiresNonNull("FileIO.data_trace_state")*/' => 'RequiresNonNull'"""
-    if debug: print("base_annotation <=", annotation)
+    debug_print("base_annotation <=", annotation)
 
     # Remove comments
     if annotation.startswith("/*"):
@@ -436,7 +443,7 @@ Example: base_annotation('/*@RequiresNonNull("FileIO.data_trace_state")*/' => 'R
     annotation = annotation.strip()
     if annotation.startswith("@"):
         annotation = annotation[1:]
-    if debug: print("base_annotation =>", annotation)
+    debug_print("base_annotation =>", annotation)
     return annotation
 
 
