@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 This script checks whether the files supplied on the command line conform
 to the Google Java style (as enforced by the google-java-format program,
