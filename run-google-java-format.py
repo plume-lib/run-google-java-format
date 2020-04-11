@@ -29,6 +29,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 
 ## To use an officially released version.
+## (Releases appear at https://github.com/google/google-java-format/releases/.)
 # Version 1.3 and earlier do not wrap line comments.
 gjf_version = os.getenv("GJF_VERSION", "1.7")
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
