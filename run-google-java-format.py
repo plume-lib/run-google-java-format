@@ -58,7 +58,11 @@ else:
     gjf_jar_path = os.path.join(script_dir, gjf_jar_name)
     # print("retrieving " + gjf_url + " to " + gjf_jar_path)
     try:
-        urlretrieve(gjf_url, gjf_jar_path)
+        # Download to a temporary file, then rename atomically.
+        # This avoids race conditions with other run-google-java-format processes.
+        f = NamedTemporaryFile(dir=script_dir)
+        urlretrieve(gjf_url, f.name)
+        os.replace(f.name, gjf_jar_path)
     except:
         print("Problem while retrieving " + gjf_url + " to " + gjf_jar_path)
         raise
