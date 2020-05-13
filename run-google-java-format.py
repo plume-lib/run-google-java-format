@@ -62,7 +62,7 @@ else:
         # This avoids race conditions with other run-google-java-format processes.
         f = tempfile.NamedTemporaryFile(dir=script_dir)
         urlretrieve(gjf_url, f.name)
-        os.replace(f.name, gjf_jar_path)
+        os.rename(f.name, gjf_jar_path)
     except:
         print("Problem while retrieving " + gjf_url + " to " + gjf_jar_path)
         raise
