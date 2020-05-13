@@ -60,7 +60,8 @@ else:
     try:
         # Download to a temporary file, then rename atomically.
         # This avoids race conditions with other run-google-java-format processes.
-        f = tempfile.NamedTemporaryFile(dir=script_dir)
+        # "delete=False" because the file will be renamed.
+        f = tempfile.NamedTemporaryFile(dir=script_dir, delete=False)
         urlretrieve(gjf_url, f.name)
         os.rename(f.name, gjf_jar_path)
     except:
