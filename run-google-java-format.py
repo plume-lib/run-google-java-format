@@ -31,6 +31,7 @@ fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 ## To use an officially released version.
 ## (Releases appear at https://github.com/google/google-java-format/releases/.)
 # Version 1.3 and earlier do not wrap line comments.
+# Version 1.8 and later require JDK 11 to run.
 gjf_version = os.getenv("GJF_VERSION", "1.7")
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
 gjf_url_base = os.getenv(
