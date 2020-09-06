@@ -63,6 +63,7 @@ typeAnnotations = set([
     "CalledMethodsPredicate",
     "CalledMethodsTop",
     "CanonicalName",
+    "CanonicalNameOrEmpty",
     "CCBottom",
     "CCTop",
     "cd",
