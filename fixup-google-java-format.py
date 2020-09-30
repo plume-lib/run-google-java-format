@@ -271,6 +271,7 @@ typeAnnotations = set([
     "SignednessBottom",
     "SignednessGlb",
     "SignedPositive",
+    "SignedPositiveFromUnsigned",
     "Speed",
     "StringVal",
     "SubQual",
