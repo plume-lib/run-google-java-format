@@ -86,6 +86,7 @@ typeAnnotations = set([
     "DoubleVal",
     "E",
     "Encrypted",
+    "EnumVal",
     "Even",
     "F",
     "FBCBottom",
