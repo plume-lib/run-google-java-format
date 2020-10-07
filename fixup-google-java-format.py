@@ -172,6 +172,7 @@ typeAnnotations = set([
     "m",
     "m2",
     "Mass",
+    "MatchesRegex",
     "MaybeAliased",
     "MaybeDerivedFromConstant",
     "MaybePresent",
