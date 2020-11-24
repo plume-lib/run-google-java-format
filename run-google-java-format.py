@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 This script reformats each file supplied on the command line according to
 the Google Java style (by calling out to the google-java-format program,
@@ -15,10 +15,7 @@ import subprocess
 import sys
 import tempfile
 
-try:
-    from urllib import urlretrieve  # python 2
-except ImportError:
-    from urllib.request import urlretrieve  # python 3
+from urllib.request import urlretrieve
 
 debug = False
 # debug = True

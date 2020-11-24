@@ -145,7 +145,7 @@ Then, add this:
 
   <target name="reformat" depends="update-run-google-java-format"
           description="Reformat Java code">
-    <apply executable="python" parallel="true" maxparallel="${maxparallel}" failonerror="true">
+    <apply executable="python3" parallel="true" maxparallel="${maxparallel}" failonerror="true">
       <arg value="./.run-google-java-format/run-google-java-format.py"/>
       <fileset refid="formatted.java.files"/>
     </apply>
@@ -153,7 +153,7 @@ Then, add this:
 
   <target name="check-format" depends="update-run-google-java-format"
           description="Check Java code formatting">
-    <apply executable="python" parallel="true" maxparallel="${maxparallel}"
+    <apply executable="python3" parallel="true" maxparallel="${maxparallel}"
        failonerror="false" resultproperty="check.format.result"
        outputproperty="check.format.stdout" errorproperty="check.format.stderr">
       <arg value="./.run-google-java-format/check-google-java-format.py"/>
@@ -199,8 +199,8 @@ task getCodeFormatScripts {
 }
 
 task pythonIsInstalled(type: Exec) {
-  description "Check that the python executable is installed."
-  executable = "python"
+  description "Check that the python3 executable is installed."
+  executable = "python3"
   args "--version"
 }
 
@@ -210,7 +210,7 @@ task checkFormat(type: Exec, dependsOn: [getCodeFormatScripts, pythonIsInstalled
   def pythonArgs = javaFiles.clone()
   pythonArgs.add(0, "$projectDir/.run-google-java-format/check-google-java-format.py")
 
-  commandLine "python"
+  commandLine "python3"
   args pythonArgs
   ignoreExitValue true
 
@@ -227,7 +227,7 @@ task reformat(type: Exec, dependsOn: [getCodeFormatScripts, pythonIsInstalled], 
   def pythonArgs = javaFiles.clone()
   pythonArgs.add(0, "$projectDir/.run-google-java-format/run-google-java-format.py")
 
-  commandLine "python"
+  commandLine "python3"
   args pythonArgs
 }
 ```
@@ -415,6 +415,6 @@ On MacOS Sierra, you can correct the problem by running these commands:
 
 ```
 brew install openssl
-brew install python@2 --with-brewed-openssl
-brew link --overwrite python@2
+brew install python@3 --with-brewed-openssl
+brew link --overwrite python@3
 ```

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """The google-java-format program (https://github.com/google/google-java-format)
 reformats Java source code, but it creates poor formatting for annotations
 in comments.
@@ -339,8 +339,7 @@ typeAnnotations = set([
 
 # File .type-annotations can add to the typeAnnotations variable.
 if os.path.isfile(".type-annotations"):
-    # pylint: disable=bad-whitespace
-    exec (open(".type-annotations").read())
+    exec(open(".type-annotations").read())
 
 debug = False
 # debug = True

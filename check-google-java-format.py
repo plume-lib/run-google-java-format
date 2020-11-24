@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 This script checks whether the files supplied on the command line conform
 to the Google Java style (as enforced by the google-java-format program,
@@ -24,10 +24,7 @@ import subprocess
 import sys
 import tempfile
 
-try:
-    from urllib import urlretrieve  # python 2
-except ImportError:
-    from urllib.request import urlretrieve  # python 3
+from urllib.request import urlretrieve
 
 debug = False
 # debug = True
