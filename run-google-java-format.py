@@ -15,7 +15,8 @@ import subprocess
 import sys
 import tempfile
 
-from urllib.request import urlretrieve
+from urllib.request import urlopen
+from shutil import copyfileobj
 
 debug = False
 # debug = True
@@ -45,6 +46,11 @@ gjf_url_base = os.getenv(
 
 gjf_jar_name = "google-java-format-" + gjf_version + gjf_snapshot + "-all-deps.jar"
 gjf_url = gjf_url_base + gjf_jar_name
+
+def urlretrieve(url, filename):
+    """Like urllib.request.urlretrieve."""
+    with urlopen(url) as in_stream, open(filename, 'wb') as out_file:
+        copyfileobj(in_stream, out_file)
 
 # Set gjf_jar_path, or retrieve it if it doesn't appear locally. Does not update
 # from remove path if remote is newer, so never change files on the server.

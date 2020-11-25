@@ -24,7 +24,8 @@ import subprocess
 import sys
 import tempfile
 
-from urllib.request import urlretrieve
+from urllib.request import urlopen
+from shutil import copyfileobj
 
 debug = False
 # debug = True
@@ -51,6 +52,10 @@ def under_git(dir, filename):
         print("p.returncode", p.returncode)
     return p.returncode == 0
 
+def urlretrieve(url, filename):
+    """Like urllib.request.urlretrieve."""
+    with urlopen(url) as in_stream, open(filename, 'wb') as out_file:
+        copyfileobj(in_stream, out_file)
 
 # Don't replace local with remote if local is under version control.
 # It would be better to just test whether the remote is newer than local,
