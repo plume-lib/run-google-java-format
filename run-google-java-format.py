@@ -15,8 +15,12 @@ import subprocess
 import sys
 import tempfile
 
-from urllib.request import urlopen
 from shutil import copyfileobj
+
+try:
+    from urllib import urlopen
+except ImportError:
+    from urllib.request import urlopen
 
 debug = False
 # debug = True
@@ -48,7 +52,7 @@ gjf_jar_name = "google-java-format-" + gjf_version + gjf_snapshot + "-all-deps.j
 gjf_url = gjf_url_base + gjf_jar_name
 
 def urlretrieve(url, filename):
-    """Like urllib.request.urlretrieve."""
+    """Like urllib.urlretrieve."""
     with urlopen(url) as in_stream, open(filename, 'wb') as out_file:
         copyfileobj(in_stream, out_file)
 
