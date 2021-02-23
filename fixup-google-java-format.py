@@ -86,6 +86,7 @@ typeAnnotations = set([
     "DoubleVal",
     "E",
     "Encrypted",
+    "EnhancedRegex", // temporary?
     "EnumVal",
     "Even",
     "F",
