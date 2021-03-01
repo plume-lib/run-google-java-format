@@ -264,6 +264,7 @@ typeAnnotations = set([
     "ReflectBottom",
     "Regex",
     "RegexBottom",
+    "RegexNNGroups",  # temporary?
     "ReportUnqualified",
     "s",
     "SameLen",
