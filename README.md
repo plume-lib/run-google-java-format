@@ -316,7 +316,7 @@ formatting changes.)
 
 Here is a way to deal with upstream reformatting.
 
-### For the person doing the reformatting:
+### For the person doing the reformatting
 
  1. Create a new branch and do your work there.
 
@@ -329,7 +329,7 @@ Here is a way to deal with upstream reformatting.
  3. Reformat by running a command such as
    `make reformat`,
    `ant reformat`, or
-   `gradle googleJavaFormat` (or whatever buildfile target you have set up).
+   `./gradlew reformat` (or whatever buildfile target you have set up).
  4. Examine the diffs to look for poor reformatting:
 
    ```git diff -w -b | grep -v '^[-+]import' | grep -v '^[-+]$'```
@@ -395,7 +395,10 @@ and after-reformatting is the reformatting commit:
 
      ```git merge after-reformatting -s recursive -X ours```
 
- 4. Run `ant reformat` or the equivalent command.
+ 4. Reformat the code by running a command such as
+   `make reformat`,
+   `ant reformat`, or
+   `./gradlew reformat` (or whatever buildfile target you have set up).
  5. Commit any formatting changes.
  6. Verify that this contains only changes you made (that is, the formatting
    changes were ignored):
