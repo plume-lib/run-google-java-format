@@ -55,7 +55,7 @@ There are two ways to install and use these scripts:
 To control which version of google-java-format to use,
 set environment variable `GJF_VERSION`.  For example:
 
-```export GJF_VERSION=1.3```
+```export GJF_VERSION=1.7```
 
 
 ## Integrating with a build system
