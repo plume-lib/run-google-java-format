@@ -10,6 +10,7 @@ from __future__ import print_function
 from distutils import spawn
 import filecmp
 import os
+import re
 import stat
 import subprocess
 import sys
@@ -30,11 +31,15 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # call directly in Python.
 fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 
+java_version_string = subprocess.check_output(['java', '-version'], stderr=subprocess.STDOUT).decode("utf-8")
+java_version = re.search('\"(\d+\.\d+).*\"', java_version_string).groups()[0]
+
 ## To use an officially released version.
 ## (Releases appear at https://github.com/google/google-java-format/releases/.)
 # Version 1.3 and earlier do not wrap line comments.
-# Version 1.8 and later require JDK 11 to run.
-gjf_version = os.getenv("GJF_VERSION", "1.7")
+# Version 1.8 and later require JDK 11 to run and reflow string literals.
+gjf_version_default = "1.7" if (java_version == "1.8") else "1.9"
+gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
 gjf_url_base = os.getenv(
     "GJF_URL_BASE",
