@@ -314,10 +314,9 @@ likelihood of merge conflicts due to formatting changes, and it ensures
 that commits and pull requests don't intermingle substantive changes with
 formatting changes.)
 
-Here are some notes about a possible way to deal with upstream
-reformatting.  Comments/improvements are welcome.
+Here is a way to deal with upstream reformatting.
 
-For the person doing the reformatting:
+### For the person doing the reformatting:
 
  1. Create a new branch and do your work there.
 
@@ -375,7 +374,8 @@ For the person doing the reformatting:
 
    ```git push --tags```
 
-For a client to merge the massive upstream changes:
+### For a client to merge the massive upstream changes
+
 Assuming before-reformatting is the last commit before reformatting
 and after-reformatting is the reformatting commit:
 
