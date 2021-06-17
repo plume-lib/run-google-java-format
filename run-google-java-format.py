@@ -140,10 +140,10 @@ else:
       "--add-exports", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
       "--add-exports", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
       "--add-exports", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-      "--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"] 
+      "--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"]
 
 result = subprocess.call(["java"] + jdk_opens + ["-jar", gjf_jar_path, "--replace"] + files)
-    
+
 ## This if statement used to be commented out, because google-java-format
 ## crashed a lot.  It seems more stable now.
 # Don't stop if there was an error, because google-java-format won't munge
