@@ -38,13 +38,15 @@ java_version = re.search('\"(\d+\.\d+).*\"', java_version_string).groups()[0]
 ## (Releases appear at https://github.com/google/google-java-format/releases/.)
 # Version 1.3 and earlier do not wrap line comments.
 # Version 1.8 and later require JDK 11 to run and reflow string literals.
-gjf_version_default = "1.7" if (java_version == "1.8") else "1.9"
+# Version 1.10.0 and later can run under JDK 16.
+gjf_version_default = "1.7" if (java_version == "1.8") else "1.10.0"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
+gjf_download_prefix = "v" if re.match(r'^1\.1[0-9]', gjf_version) else "google-java-format-"
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
 gjf_url_base = os.getenv(
     "GJF_URL_BASE",
-    "https://github.com/google/google-java-format/releases/download/google-java-format-" +
-    gjf_version + "/")
+    "https://github.com/google/google-java-format/releases/download/" +
+    gjf_download_prefix + gjf_version + "/")
 ## To use a non-official version by default, because an official version is
 ## unusably buggy (like 1.1) or no new release has been made in a long time.
 ## Never change the file at a URL; make it unique by adding a date.
@@ -129,7 +131,19 @@ if len(files) == 0:
     print("run-google-java-format.py expects 1 or more filenames as arguments")
     sys.exit(1)
 
-result = subprocess.call(["java", "-jar", gjf_jar_path, "--replace"] + files)
+if (java_version == "1.8"):
+    jdk_opens = []
+else:
+    # From https://github.com/google/google-java-format/releases/
+    jdk_opens = [
+      "--add-exports", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+      "--add-exports", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+      "--add-exports", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+      "--add-exports", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+      "--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"] 
+
+result = subprocess.call(["java"] + jdk_opens + ["-jar", gjf_jar_path, "--replace"] + files)
+    
 ## This if statement used to be commented out, because google-java-format
 ## crashed a lot.  It seems more stable now.
 # Don't stop if there was an error, because google-java-format won't munge
