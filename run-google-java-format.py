@@ -38,13 +38,14 @@ java_version = re.search('\"(\d+\.\d+).*\"', java_version_string).groups()[0]
 ## (Releases appear at https://github.com/google/google-java-format/releases/.)
 # Version 1.3 and earlier do not wrap line comments.
 # Version 1.8 and later require JDK 11 to run and reflow string literals.
-gjf_version_default = "1.7" if (java_version == "1.8") else "1.9"
+gjf_version_default = "1.7" if (java_version == "1.8") else "1.10.0"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
+gjf_download_prefix = "v" if re.match(r'^1\.1[0-9]', gjf_version) else "google-java-format-"
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
 gjf_url_base = os.getenv(
     "GJF_URL_BASE",
-    "https://github.com/google/google-java-format/releases/download/google-java-format-" +
-    gjf_version + "/")
+    "https://github.com/google/google-java-format/releases/download/" +
+    gjf_download_prefix + gjf_version + "/")
 ## To use a non-official version by default, because an official version is
 ## unusably buggy (like 1.1) or no new release has been made in a long time.
 ## Never change the file at a URL; make it unique by adding a date.
