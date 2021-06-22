@@ -215,7 +215,7 @@ task checkFormat(type: Exec, dependsOn: [getCodeFormatScripts, pythonIsInstalled
   ignoreExitValue true
 
   doLast {
-    if (execResult.exitValue != 0) {
+    if (!executionResult.isPresent() || executionResult.get().getExitValue() != 0) {
       throw new GradleException("Found improper formatting, try running:  ./gradlew reformat")
     }
   }
