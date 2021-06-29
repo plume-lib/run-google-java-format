@@ -36,6 +36,7 @@ typeAnnotations = set([
     "ACCBottom",
     "Acceleration",
     "ACCTop",
+    "AinferBottom",
     "AlwaysSafe",
     "Angle",
     "AnnoWithStringArg",
