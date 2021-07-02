@@ -208,6 +208,7 @@ typeAnnotations = set([
     "MustCallUnknown",
     "N",
     "NegativeIndexFor",
+    "NewObject",
     "NonConstant",
     "NonDet",
     "NonLeaked",
