@@ -32,7 +32,9 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 
 java_version_string = subprocess.check_output(['java', '-version'], stderr=subprocess.STDOUT).decode("utf-8")
-java_version = re.search('\"(\d+\.\d+).*\"', java_version_string).groups()[0]
+if debug:
+    print("java_version_string =", java_version_string)
+java_version = re.search('\"(\d+(\.\d+)?).*\"', java_version_string).groups()[0]
 
 ## To use an officially released version.
 ## (Releases appear at https://github.com/google/google-java-format/releases/.)
