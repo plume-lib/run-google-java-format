@@ -31,6 +31,10 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # call directly in Python.
 fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 
+# java_version_string is either 1.8 or nothing.
+# For JDK  8, `java -version` has the form: openjdk version "1.8.0_292"
+# For JDK 11, `java -version` has the form: openjdk 11.0.11 2021-04-20
+# For JDK 17, `java -version` has the form: java 17 2021-09-14 LTS
 java_version_string = subprocess.check_output(['java', '-version'], stderr=subprocess.STDOUT).decode("utf-8")
 if debug:
     print("java_version_string =", java_version_string)
