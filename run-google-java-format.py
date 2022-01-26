@@ -45,7 +45,7 @@ java_version = re.search('\"(\d+(\.\d+)?).*\"', java_version_string).groups()[0]
 # Version 1.3 and earlier do not wrap line comments.
 # Version 1.8 and later require JDK 11 to run and reflow string literals.
 # Version 1.10.0 and later can run under JDK 16.
-gjf_version_default = "1.7" if (java_version == "1.8") else "1.11.0"
+gjf_version_default = "1.7" if (java_version == "1.8") else "1.13.0"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
 gjf_download_prefix = "v" if re.match(r'^1\.1[0-9]', gjf_version) else "google-java-format-"
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
