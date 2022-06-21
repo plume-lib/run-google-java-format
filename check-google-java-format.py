@@ -13,7 +13,6 @@ You could invoke this program, for example, in a git pre-commit hook.
 # this script can be eliminated, or its interface simplified.
 
 from __future__ import print_function
-from distutils import spawn
 import filecmp
 import os
 import os.path
@@ -42,7 +41,7 @@ run_py = os.path.join(script_dir, "run-google-java-format.py")
 # (I can run "git ls-files" from the command line in any directory.)
 def under_git(dir, filename):
     """Return true if filename in dir is under git control."""
-    if not spawn.find_executable("git"):
+    if not shutil.which("git"):
         if debug:
             print("no git executable found")
         return False
