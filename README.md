@@ -10,7 +10,7 @@ The [google-java-format](https://github.com/google/google-java-format), or GJF,
 program reformats Java source code.  It is a good formatter, but
 this project (run-google-java-format) improves it:
  * This project creates better formatting for [type annotations](https://github.com/google/google-java-format/issues/5).
- * This project creates better formatting for [annotations in comments](https://types.cs.washington.edu/checker-framework/current/checker-framework-manual.html#annotations-in-comments).
+ * This project creates better formatting for annotations in comments.
  * This project can check whether a file is properly formatted, which is desirable in a pre-commit hook.
    (Update: Version 1.5 of GJF can do this, but it is not cognizant of the better formatting that this project does.)
  * This project has a handy script to reformat code; by contrast, GJF requires a long, hard-to-remember command line.
