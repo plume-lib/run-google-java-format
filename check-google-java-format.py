@@ -45,11 +45,13 @@ def under_git(dir, filename):
         if debug:
             print("no git executable found")
         return False
-    FNULL = open(os.devnull, 'w')
-    p = subprocess.Popen(["git", "ls-files", filename, "--error-unmatch"],
-                         cwd=dir,
-                         stdout=FNULL,
-                         stderr=subprocess.STDOUT)
+    FNULL = open(os.devnull, "w")
+    p = subprocess.Popen(
+        ["git", "ls-files", filename, "--error-unmatch"],
+        cwd=dir,
+        stdout=FNULL,
+        stderr=subprocess.STDOUT,
+    )
     p.wait()
     if debug:
         print("p.returncode", p.returncode)
@@ -58,7 +60,7 @@ def under_git(dir, filename):
 
 def urlretrieve(url, filename):
     """Like urllib.urlretrieve."""
-    with urlopen(url) as in_stream, open(filename, 'wb') as out_file:
+    with urlopen(url) as in_stream, open(filename, "wb") as out_file:
         copyfileobj(in_stream, out_file)
 
 
@@ -67,11 +69,15 @@ def urlretrieve(url, filename):
 # But raw GitHub URLs don't have the necessary last-modified information.
 if not under_git(script_dir, "run-google-java-format.py"):
     urlretrieve(
-        "https://raw.githubusercontent.com/" +
-        "plume-lib/run-google-java-format/master/run-google-java-format.py", run_py)
-    os.chmod(run_py, os.stat(run_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        "https://raw.githubusercontent.com/"
+        + "plume-lib/run-google-java-format/master/run-google-java-format.py",
+        run_py,
+    )
+    os.chmod(
+        run_py, os.stat(run_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+    )
 
-temp_dir = tempfile.mkdtemp(prefix='check-google-java-format-')
+temp_dir = tempfile.mkdtemp(prefix="check-google-java-format-")
 
 
 def temporary_file_name():
@@ -88,7 +94,7 @@ files = sys.argv[1:]
 if len(files) == 0:
     content = sys.stdin.read()
     fname = temporary_file_name() + ".java"
-    with open(fname, 'w') as outfile:
+    with open(fname, "w") as outfile:
         print(content, file=outfile)
     files = [fname]
 

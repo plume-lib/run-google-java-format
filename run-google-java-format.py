@@ -35,10 +35,12 @@ fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
 # For JDK  8, `java -version` has the form: openjdk version "1.8.0_292"
 # For JDK 11, `java -version` has the form: openjdk 11.0.11 2021-04-20
 # For JDK 17, `java -version` has the form: java 17 2021-09-14 LTS
-java_version_string = subprocess.check_output(['java', '-version'], stderr=subprocess.STDOUT).decode("utf-8")
+java_version_string = subprocess.check_output(
+    ["java", "-version"], stderr=subprocess.STDOUT
+).decode("utf-8")
 if debug:
     print("java_version_string =", java_version_string)
-java_version = re.search('\"(\d+(\.\d+)?).*\"', java_version_string).groups()[0]
+java_version = re.search('"(\d+(\.\d+)?).*"', java_version_string).groups()[0]
 
 ## To use an officially released version.
 ## (Releases appear at https://github.com/google/google-java-format/releases/.)
@@ -50,12 +52,17 @@ java_version = re.search('\"(\d+(\.\d+)?).*\"', java_version_string).groups()[0]
 # Version 1.10.0 and later can run under JDK 16.
 gjf_version_default = "1.7" if (java_version == "1.8") else "1.15.0"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
-gjf_download_prefix = "v" if re.match(r'^1\.1[0-9]', gjf_version) else "google-java-format-"
+gjf_download_prefix = (
+    "v" if re.match(r"^1\.1[0-9]", gjf_version) else "google-java-format-"
+)
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
 gjf_url_base = os.getenv(
     "GJF_URL_BASE",
-    "https://github.com/google/google-java-format/releases/download/" +
-    gjf_download_prefix + gjf_version + "/")
+    "https://github.com/google/google-java-format/releases/download/"
+    + gjf_download_prefix
+    + gjf_version
+    + "/",
+)
 ## To use a non-official version by default, because an official version is
 ## unusably buggy (like 1.1) or no new release has been made in a long time.
 ## Never change the file at a URL; make it unique by adding a date.
@@ -70,7 +77,7 @@ gjf_url = gjf_url_base + gjf_jar_name
 
 def urlretrieve(url, filename):
     """Like urllib.urlretrieve."""
-    with urlopen(url) as in_stream, open(filename, 'wb') as out_file:
+    with urlopen(url) as in_stream, open(filename, "wb") as out_file:
         copyfileobj(in_stream, out_file)
 
 
@@ -103,11 +110,13 @@ def under_git(dir, filename):
         if debug:
             print("no git executable found")
         return False
-    FNULL = open(os.devnull, 'w')
-    p = subprocess.Popen(["git", "ls-files", filename, "--error-unmatch"],
-                         cwd=dir,
-                         stdout=FNULL,
-                         stderr=subprocess.STDOUT)
+    FNULL = open(os.devnull, "w")
+    p = subprocess.Popen(
+        ["git", "ls-files", filename, "--error-unmatch"],
+        cwd=dir,
+        stdout=FNULL,
+        stderr=subprocess.STDOUT,
+    )
     p.wait()
     if debug:
         print("p.returncode", p.returncode)
@@ -120,15 +129,19 @@ def under_git(dir, filename):
 if not under_git(script_dir, "fixup-google-java-format.py"):
     try:
         urlretrieve(
-            "https://raw.githubusercontent.com/" +
-            "plume-lib/run-google-java-format/master/fixup-google-java-format.py", fixup_py)
+            "https://raw.githubusercontent.com/"
+            + "plume-lib/run-google-java-format/master/fixup-google-java-format.py",
+            fixup_py,
+        )
     except:
         if os.path.exists(fixup_py):
             print("Couldn't retrieve fixup-google-java-format.py; using cached version")
         else:
             print("Couldn't retrieve fixup-google-java-format.py")
             sys.exit(1)
-    os.chmod(fixup_py, os.stat(fixup_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+    os.chmod(
+        fixup_py, os.stat(fixup_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+    )
 
 if debug:
     print("script_dir:", script_dir)
@@ -140,20 +153,28 @@ if len(files) == 0:
     print("run-google-java-format.py expects 1 or more filenames as arguments")
     sys.exit(1)
 
-if (java_version == "1.8"):
+if java_version == "1.8":
     jdk_opens = []
 else:
     # From https://github.com/google/google-java-format/releases/
     # This is no longer required as of GJF version 1.15.0, but users might
     # supply a version number lower than that.
     jdk_opens = [
-      "--add-exports", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-      "--add-exports", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-      "--add-exports", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
-      "--add-exports", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-      "--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"]
+        "--add-exports",
+        "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+        "--add-exports",
+        "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+        "--add-exports",
+        "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+        "--add-exports",
+        "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+        "--add-exports",
+        "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+    ]
 
-result = subprocess.call(["java"] + jdk_opens + ["-jar", gjf_jar_path, "--replace"] + files)
+result = subprocess.call(
+    ["java"] + jdk_opens + ["-jar", gjf_jar_path, "--replace"] + files
+)
 
 ## This if statement used to be commented out, because google-java-format
 ## crashed a lot.  It seems more stable now.
