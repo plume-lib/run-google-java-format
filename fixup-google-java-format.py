@@ -27,8 +27,7 @@ def eprint(*args, **kwargs):
 
 # These are type annotations, which should NOT go on their own line.
 # A type annotation's @Target annotation contains "TYPE_USE".
-# This includes private type annotations used for testing, to keep the Checker
-# Framework test source code looking nice.
+# This includes private type annotations used in Checker Framework tests.
 # To generate this list:
 #   grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK/checker/src/test $CHECKERFRAMEWORK/checker-qual/src/main/java $CHECKERFRAMEWORK/framework/src/main/java $CHECKERFRAMEWORK/docs/examples/units-extension $CHECKERFRAMEWORK/framework/src/test/java $t/object-construction-checker/object-construction-qual/src $t/object-construction-checker/must-call-qual/src $t/checker-framework-fork-t-rasmud-branch-nondet-checker/checker-qual/src/main/java/org/checkerframework/checker/determinism | grep -v '~' | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq > type-qualifiers.txt
 typeAnnotations = set(
@@ -365,7 +364,8 @@ typeAnnotations = set(
 
 # File .type-annotations can add to the typeAnnotations variable.
 if os.path.isfile(".type-annotations"):
-    exec(open(".type-annotations").read())
+    with open(".type-annotations") as ta:
+        exec(ta.read())
 
 debug = False
 # debug = True

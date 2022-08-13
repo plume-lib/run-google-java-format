@@ -45,17 +45,16 @@ def under_git(dir, filename):
         if debug:
             print("no git executable found")
         return False
-    FNULL = open(os.devnull, "w")
-    p = subprocess.Popen(
+    with subprocess.Popen(
         ["git", "ls-files", filename, "--error-unmatch"],
         cwd=dir,
-        stdout=FNULL,
+        stdout=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
-    )
-    p.wait()
-    if debug:
-        print("p.returncode", p.returncode)
-    return p.returncode == 0
+    ) as p:
+        p.wait()
+        if debug:
+            print("p.returncode", p.returncode)
+        return p.returncode == 0
 
 
 def urlretrieve(url, filename):

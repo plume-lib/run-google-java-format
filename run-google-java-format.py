@@ -94,9 +94,9 @@ else:
         # Download to a temporary file, then rename atomically.
         # This avoids race conditions with other run-google-java-format processes.
         # "delete=False" because the file will be renamed.
-        f = tempfile.NamedTemporaryFile(dir=script_dir, delete=False)
-        urlretrieve(gjf_url, f.name)
-        os.rename(f.name, gjf_jar_path)
+        with tempfile.NamedTemporaryFile(dir=script_dir, delete=False) as f:
+            urlretrieve(gjf_url, f.name)
+            os.rename(f.name, gjf_jar_path)
     except:
         print("Problem while retrieving " + gjf_url + " to " + gjf_jar_path)
         raise
@@ -110,17 +110,16 @@ def under_git(dir, filename):
         if debug:
             print("no git executable found")
         return False
-    FNULL = open(os.devnull, "w")
-    p = subprocess.Popen(
+    with subprocess.Popen(
         ["git", "ls-files", filename, "--error-unmatch"],
         cwd=dir,
-        stdout=FNULL,
+        stdout=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
-    )
-    p.wait()
-    if debug:
-        print("p.returncode", p.returncode)
-    return p.returncode == 0
+    ) as p:
+        p.wait()
+        if debug:
+            print("p.returncode", p.returncode)
+        return p.returncode == 0
 
 
 # Don't replace local with remote if local is under version control.
