@@ -266,7 +266,7 @@ task getCodeFormatScripts {
 
 ### Git pre-commit hook
 
-Here is an example of what you might put in a Git pre-commit hook:
+Here is an example of what you might put in a Git pre-commit hook.
 This only checks the files that are being comitted, which is much faster than checking all files.
 
 ```
