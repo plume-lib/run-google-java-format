@@ -33,12 +33,12 @@ Given `.java` file names on the command line, reports any that would be
 reformatted by the `run-google-java-format.py` program, and returns
 non-zero status if there were any.
 If called with no arguments, it reads from standard output.
-You could invoke this program, for example, in a git pre-commit hook (see below).
+You could invoke this program, for example, in a [git pre-commit hook](#git-pre-commit-hook).
 
 
 ## Installing
 
-There are two ways to install and use these scripts (see below for integration with [Make](#Makefile), [Ant](#Ant `build.xml`), [Gradle](#Gradle `build.gradle`), and [Git pre-commit hooks](#Git pre-commit hook) that you can copy-and-paste into your build file):
+There are two ways to install and use these scripts (see below for integration with [Make](#makefile), [Ant](#ant-buildxml), [Gradle](#gradle-buildgradle), and [Git pre-commit hooks](#git-pre-commit-hook) that you can copy-and-paste into your build file):
  * Clone the repository (run `git clone
    https://github.com/plume-lib/run-google-java-format.git`) and run the
    scripts from there.
