@@ -38,7 +38,7 @@ You could invoke this program, for example, in a git pre-commit hook (see below)
 
 ## Installing
 
-There are two ways to install and use these scripts:
+There are two ways to install and use these scripts (see below for integration with [Make](#Makefile), [Ant](#Ant `build.xml`), [Gradle](#Gradle `build.gradle`), and [Git pre-commit hooks](#Git pre-commit hook) that you can copy-and-paste into your build file):
  * Clone the repository (run `git clone
    https://github.com/plume-lib/run-google-java-format.git`) and run the
    scripts from there.
