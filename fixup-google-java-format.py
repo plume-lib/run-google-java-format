@@ -29,7 +29,7 @@ def eprint(*args, **kwargs):
 # A type annotation's @Target annotation contains "TYPE_USE".
 # This includes private type annotations used in Checker Framework tests.
 # To generate this list:
-#   grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK/checker/src/test $CHECKERFRAMEWORK/checker-qual/src/main/java $CHECKERFRAMEWORK/framework/src/main/java $CHECKERFRAMEWORK/docs/examples/units-extension $CHECKERFRAMEWORK/framework/src/test/java $t/checker-framework-fork-t-rasmud-branch-nondet-checker/checker-qual/src/main/java/org/checkerframework/checker/determinism | grep -v '~' | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/    "\1",/' | sort | uniq > type-qualifiers.txt
+#   grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK/checker/src/test $CHECKERFRAMEWORK/checker-qual/src/main/java $CHECKERFRAMEWORK/framework/src/main/java $CHECKERFRAMEWORK/docs/examples/units-extension $CHECKERFRAMEWORK/framework/src/test/java $t/checker-framework-fork-t-rasmud-branch-nondet-checker/checker-qual/src/main/java/org/checkerframework/checker/determinism | grep -v '~' | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/        "\1",/' | sort | uniq > type-qualifiers.txt
 typeAnnotations = set(
     [
         "A",
