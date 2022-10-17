@@ -86,6 +86,7 @@ typeAnnotations = set(
         "Det",
         "DisbarUseBottom",
         "DisbarUseTop",
+        "DoesNotMatchRegex",
         "DotSeparatedIdentifiers",
         "DotSeparatedIdentifiersOrPrimitiveType",
         "DoubleVal",
