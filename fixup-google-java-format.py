@@ -356,7 +356,7 @@ typeAnnotations = set(
         "UpperBoundBottom",
         "UpperBoundLiteral",
         "UpperBoundUnknown",
-        "Value",
+        "ValueTypeAnno",
         "VariableNameDefaultBottom",
         "VariableNameDefaultMiddle",
         "VariableNameDefaultTop",
