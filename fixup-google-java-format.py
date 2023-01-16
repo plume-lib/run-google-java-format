@@ -25,6 +25,7 @@ def eprint(*args, **kwargs):
 
 # pylint: disable=line-too-long, multiple-statements
 
+# Keep this list in sync with FormatAnnotationsStep.java in spotless.
 # These are type annotations, which should NOT go on their own line.
 # A type annotation's @Target annotation contains "TYPE_USE".
 # This includes private type annotations used in Checker Framework tests.
@@ -37,6 +38,13 @@ typeAnnotations = set(
         "Acceleration",
         "ACCTop",
         "AinferBottom",
+        "AinferDefaultType",
+        "AinferParent",
+        "AinferSibling1",
+        "AinferSibling2",
+        "AinferTop",
+        "AinferImplicitAnno",
+        "AinferSiblingWithFields",
         "AlwaysSafe",
         "Angle",
         "AnnoWithStringArg",
@@ -84,6 +92,7 @@ typeAnnotations = set(
         "DefaultType",
         "degrees",
         "Det",
+        "DoesNotMatchRegex",
         "DisbarUseBottom",
         "DisbarUseTop",
         "DoesNotMatchRegex",
