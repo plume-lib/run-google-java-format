@@ -50,7 +50,7 @@ java_version = re.search('"(\d+(\.\d+)?).*"', java_version_string).groups()[0]
 # inconsistent with later versions of GJF, so you might want to just disable
 # formatting on Java 8 if you also use a later version of Java.
 # Version 1.10.0 and later can run under JDK 16.
-gjf_version_default = "1.7" if (java_version == "1.8") else "1.15.0"
+gjf_version_default = "1.7" if (java_version == "1.8") else "1.16.0"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
 gjf_download_prefix = (
     "v" if re.match(r"^1\.1[0-9]", gjf_version) else "google-java-format-"
