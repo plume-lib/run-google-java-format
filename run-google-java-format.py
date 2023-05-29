@@ -45,9 +45,10 @@ java_version = re.search('"(\d+(\.\d+)?).*"', java_version_string).groups()[0]
 ## To use an officially released version.
 ## (Releases appear at https://github.com/google/google-java-format/releases/ ,
 ## but I keep this in sync with Spotless.)
+# Version 1.3 and earlier do not wrap line comments.
 # Version 1.8 and later require JDK 11 to run, and it reflows string literals.
 # Note that due to changes since GJF 1.7, formatting with GJF 1.7 is
-# inconsistent with later versions of GJF, so you should probably disable
+# inconsistent with later versions of GJF, so you should disable
 # formatting on Java 8 if you also use a later version of Java.
 # Version 1.10.0 and later can run under JDK 16.
 ## To set this variable:
