@@ -54,7 +54,7 @@ java_version = re.search('"(\d+(\.\d+)?).*"', java_version_string).groups()[0]
 ## To set this variable:
 ## See https://github.com/diffplug/spotless/blob/main/lib/src/main/java/com/diffplug/spotless/java/GoogleJavaFormatStep.java#L75
 ## or search for "Bump default google" in https://github.com/diffplug/spotless/blob/main/plugin-gradle/CHANGES.md
-gjf_version_default = "1.7" if (java_version == "1.8") else "1.17.0"
+gjf_version_default = "1.7" if (java_version == "1.8") else "1.19.2"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
 gjf_download_prefix = (
     "v" if re.match(r"^1\.1[0-9]", gjf_version) else "google-java-format-"
