@@ -3,7 +3,7 @@
 This script reformats each file supplied on the command line according to
 the Google Java style (by calling out to the google-java-format program,
 https://github.com/google/google-java-format), but with improvements to
-the formatting of annotations in comments.
+the formatting of type annotations and annotations in comments.
 """
 
 from __future__ import print_function
