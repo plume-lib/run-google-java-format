@@ -185,7 +185,7 @@ task getCodeFormatScripts {
     def rgjfDir = "$projectDir/.run-google-java-format"
     if (! new File(rgjfDir).exists()) {
       exec {
-        commandLine 'git', 'clone', '--depth', '1', "https://github.com/plume-lib/run-google-java-format.git", rgjfDir
+        commandLine 'git', 'clone', '--filter=tree:0', "https://github.com/plume-lib/run-google-java-format.git", rgjfDir
       }
     } else {
       // Ignore exit value so this does not halt the build when not connected to the Internet.
@@ -254,7 +254,7 @@ task getCodeFormatScripts {
   doLast {
     def rgjfDir = "$projectDir/.run-google-java-format"
     if (! new File(rgjfDir).exists()) {
-      def rgjfGit = Grgit.clone(dir: rgjfDir, uri: 'https://github.com/plume-lib/run-google-java-format.git')
+      def rgjfGit = Grgit.clone(dir: rgjfDir, uri: 'https://github.com/plume-lib/run-google-java-format.git', depth: 1)
     } else {
       def rgjfGit = Grgit.open(dir: rgjfDir)
       rgjfGit.pull()
