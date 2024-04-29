@@ -460,7 +460,7 @@ def fixup_loop(infile, outfile):
             debug_print("line is :", line)
             m = re.search(trailingannoRegex, prev)
             debug_print("trailing? (post-loop-body)", m, prev, line)
-            if re.search(" try \($", prev):
+            if re.search(r' try \($', prev):
                 candidate_line = prev.rstrip() + line.lstrip()
                 if len(candidate_line) < 100:
                     line = candidate_line
