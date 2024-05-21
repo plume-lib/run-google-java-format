@@ -16,7 +16,6 @@ from __future__ import print_function
 import filecmp
 import os
 import os.path
-import re
 import shutil
 import stat
 import subprocess

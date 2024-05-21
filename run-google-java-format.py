@@ -7,7 +7,6 @@ the formatting of type annotations and annotations in comments.
 """
 
 from __future__ import print_function
-import filecmp
 import os
 import re
 import stat
@@ -101,7 +100,7 @@ else:
         with tempfile.NamedTemporaryFile(dir=script_dir, delete=False) as f:
             urlretrieve(gjf_url, f.name)
             os.rename(f.name, gjf_jar_path)
-    except:
+    except Exception:
         print("Problem while retrieving " + gjf_url + " to " + gjf_jar_path)
         raise
 
@@ -136,7 +135,7 @@ if not under_git(script_dir, "fixup-google-java-format.py"):
             + "plume-lib/run-google-java-format/master/fixup-google-java-format.py",
             fixup_py,
         )
-    except:
+    except Exception:
         if os.path.exists(fixup_py):
             print("Couldn't retrieve fixup-google-java-format.py; using cached version")
         else:
