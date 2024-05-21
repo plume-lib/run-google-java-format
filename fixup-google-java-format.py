@@ -442,7 +442,7 @@ def fixup_loop(infile, outfile):
         while m:
             debug_print("found trailing", prev, line)
             anno = m.group(2)
-            if not base_annotation(anno) in typeAnnotations:
+            if base_annotation(anno) not in typeAnnotations:
                 break
             debug_print("prev was:", prev)
             candidate_prev = prev[0 : m.end(1)] + prev[m.end(2) :]
@@ -460,7 +460,7 @@ def fixup_loop(infile, outfile):
             debug_print("line is :", line)
             m = re.search(trailingannoRegex, prev)
             debug_print("trailing? (post-loop-body)", m, prev, line)
-            if re.search(r' try \($', prev):
+            if re.search(r" try \($", prev):
                 candidate_line = prev.rstrip() + line.lstrip()
                 if len(candidate_line) < 100:
                     line = candidate_line
