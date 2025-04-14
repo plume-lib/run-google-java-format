@@ -44,19 +44,25 @@ java_version = re.search(r'"(\d+(\.\d+)?).*"', java_version_string).groups()[0]
 ## To use an officially released version.
 ## (Releases appear at https://github.com/google/google-java-format/releases/ ,
 ## but I keep this in sync with Spotless.)
+# Because formatting is inconsistent between versions of GJF, you should
+# enable formatting only on versions of Java that support your version of GJF.
+# For example, don't format under Java 8/11 if you also use a later version of Java.
 # Version 1.3 and earlier do not wrap line comments.
-# Version 1.8 and later require JDK 11 to run, and it reflows string literals.
-# Note that due to changes since GJF 1.7, formatting with GJF 1.7 is
-# inconsistent with later versions of GJF, so you should disable
-# formatting on Java 8 if you also use a later version of Java.
+# Version 1.8 and later require JDK 11.
 # Version 1.10.0 and later can run under JDK 16.
+# Version 1.25.0 and later require JDK 17.
 ## To set this variable:
 ## See https://github.com/diffplug/spotless/blob/main/lib/src/main/java/com/diffplug/spotless/java/GoogleJavaFormatStep.java#L75
 ## or search for "Bump default google" in https://github.com/diffplug/spotless/blob/main/plugin-gradle/CHANGES.md
-gjf_version_default = "1.7" if (java_version == "1.8") else "1.19.2"
+if java_version == "1.8":
+    gjf_version_default = "1.7"
+elif java_version == "11":
+    gjf_version_default = "1.24.0"
+else:
+    gjf_version_default = "1.26.0"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
 gjf_download_prefix = (
-    "v" if re.match(r"^1\.1[0-9]", gjf_version) else "google-java-format-"
+    "v" if re.match(r"^1\.[1-9][0-9]", gjf_version) else "google-java-format-"
 )
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
 gjf_url_base = os.getenv(
@@ -100,9 +106,10 @@ else:
         with tempfile.NamedTemporaryFile(dir=script_dir, delete=False) as f:
             urlretrieve(gjf_url, f.name)
             os.rename(f.name, gjf_jar_path)
-    except Exception:
-        print("Problem while retrieving " + gjf_url + " to " + gjf_jar_path)
-        raise
+    except Exception as e:
+        raise Exception(
+            "Problem while retrieving " + gjf_url + " to " + gjf_jar_path
+        ) from e
 
 
 # For some reason, the "git ls-files" must be run from the root.
@@ -129,17 +136,21 @@ def under_git(dir, filename):
 # It would be better to just test whether the remote is newer than local,
 # but raw GitHub URLs don't have the necessary last-modified information.
 if not under_git(script_dir, "fixup-google-java-format.py"):
+    url = (
+        "https://raw.githubusercontent.com/"
+        + "plume-lib/run-google-java-format/master/fixup-google-java-format.py"
+    )
     try:
-        urlretrieve(
-            "https://raw.githubusercontent.com/"
-            + "plume-lib/run-google-java-format/master/fixup-google-java-format.py",
-            fixup_py,
-        )
+        urlretrieve(url, fixup_py)
     except Exception:
         if os.path.exists(fixup_py):
-            print("Couldn't retrieve fixup-google-java-format.py; using cached version")
+            print(
+                "Couldn't retrieve fixup-google-java-format.py from "
+                + url
+                + "; using cached version"
+            )
         else:
-            print("Couldn't retrieve fixup-google-java-format.py")
+            print("Couldn't retrieve fixup-google-java-format.py from " + url)
             sys.exit(1)
     os.chmod(
         fixup_py, os.stat(fixup_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
