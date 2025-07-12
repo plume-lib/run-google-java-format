@@ -18,7 +18,7 @@ import tempfile
 from shutil import copyfileobj
 
 try:
-    from urllib import urlopen
+    from urllib import urlopen  # type: ignore[attr-defined]
 except ImportError:
     from urllib.request import urlopen
 
@@ -39,7 +39,10 @@ java_version_string = subprocess.check_output(
 ).decode("utf-8")
 if debug:
     print("java_version_string =", java_version_string)
-java_version = re.search(r'"(\d+(\.\d+)?).*"', java_version_string).groups()[0]
+match = re.search(r'"(\d+(\.\d+)?).*"', java_version_string)
+if not match:
+    raise Exception(f'no match for java version string "{java_version_string}"')
+java_version = match.groups()[0]
 
 ## To use an officially released version.
 ## (Releases appear at https://github.com/google/google-java-format/releases/ ,

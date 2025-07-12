@@ -25,7 +25,7 @@ import tempfile
 from shutil import copyfileobj
 
 try:
-    from urllib import urlopen
+    from urllib import urlopen  # type: ignore[attr-defined]
 except ImportError:
     from urllib.request import urlopen
 
@@ -99,7 +99,7 @@ temp_dir = tempfile.mkdtemp(prefix="check-google-java-format-")
 
 def temporary_file_name() -> str:
     """Return the name of a temporary file."""
-    return os.path.join(temp_dir, next(tempfile._get_candidate_names()))
+    return os.path.join(temp_dir, next(tempfile._get_candidate_names()))  # type: ignore[attr-defined]
 
 
 def cleanup() -> None:

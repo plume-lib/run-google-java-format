@@ -16,10 +16,10 @@ import os
 import os.path
 import re
 import sys
-from typing import TextIO
+from typing import TextIO, Any
 
 
-def eprint(*args: object, **kwargs: str) -> None:
+def eprint(*args: object, **kwargs: Any) -> None:
     "Print to standard error"
     print(*args, file=sys.stderr, **kwargs)
 
@@ -361,7 +361,7 @@ debug = False
 # debug = True
 
 
-def debug_print(*args: object, **kwargs: str) -> None:
+def debug_print(*args: object, **kwargs: Any) -> None:
     """Print, only if the debug variable is set."""
     if debug:
         print(*args, **kwargs)
