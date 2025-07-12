@@ -18,6 +18,18 @@ jobs:
           paths:
             - ".git"
 
+      - run:
+          name: install dependencies
+          command: |
+            sudo apt update
+            sudo apt install pip
+            sudo apt install pipx
+            pipx ensurepath
+            pip install ruff
+            pipx install mypy
+
+      - run: make style-check
+
       - run: echo "TODO add some tests"
 
 workflows:

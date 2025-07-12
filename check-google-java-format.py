@@ -25,7 +25,7 @@ import tempfile
 from shutil import copyfileobj
 
 try:
-    from urllib import urlopen
+    from urllib import urlopen  # type: ignore[attr-defined]
 except ImportError:
     from urllib.request import urlopen
 
@@ -38,8 +38,16 @@ run_py = os.path.join(script_dir, "run-google-java-format.py")
 
 # For some reason, the "git ls-files" must be run from the root.
 # (I can run "git ls-files" from the command line in any directory.)
-def under_git(dir, filename):
-    """Return true if filename in dir is under git control."""
+def under_git(dir: str, filename: str) -> bool:
+    """Return true if `filename` in `dir` is under git control.
+
+    Args:
+        dir: the directory
+        filename: the file name
+
+    Returns:
+        true if `filename` in `dir` is under git control.
+    """
     if not shutil.which("git"):
         if debug:
             print("no git executable found")
@@ -56,7 +64,7 @@ def under_git(dir, filename):
         return p.returncode == 0
 
 
-def urlretrieve(url, filename):
+def urlretrieve(url: str, filename: str) -> None:
     """Like urllib.urlretrieve."""
     with urlopen(url) as in_stream, open(filename, "wb") as out_file:
         copyfileobj(in_stream, out_file)
@@ -66,11 +74,22 @@ def urlretrieve(url, filename):
 # It would be better to just test whether the remote is newer than local,
 # but raw GitHub URLs don't have the necessary last-modified information.
 if not under_git(script_dir, "run-google-java-format.py"):
-    urlretrieve(
+    url = (
         "https://raw.githubusercontent.com/"
-        + "plume-lib/run-google-java-format/master/run-google-java-format.py",
-        run_py,
+        + "plume-lib/run-google-java-format/master/run-google-java-format.py"
     )
+    try:
+        urlretrieve(url, run_py)
+    except Exception:
+        if os.path.exists(run_py):
+            print(
+                "Couldn't retrieve run-google-java-format.py from "
+                + url
+                + "; using cached version"
+            )
+        else:
+            print("Couldn't retrieve run-google-java-format.py from " + url)
+            sys.exit(1)
     os.chmod(
         run_py, os.stat(run_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
     )
@@ -78,12 +97,12 @@ if not under_git(script_dir, "run-google-java-format.py"):
 temp_dir = tempfile.mkdtemp(prefix="check-google-java-format-")
 
 
-def temporary_file_name():
+def temporary_file_name() -> str:
     """Return the name of a temporary file."""
-    return os.path.join(temp_dir, next(tempfile._get_candidate_names()))
+    return os.path.join(temp_dir, next(tempfile._get_candidate_names()))  # type: ignore[attr-defined]
 
 
-def cleanup():
+def cleanup() -> None:
     """Clean up temporary files."""
     shutil.rmtree(temp_dir)
 
