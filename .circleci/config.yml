@@ -18,6 +18,8 @@ jobs:
           paths:
             - ".git"
 
+      - run: make style-check
+
       - run: echo "TODO add some tests"
 
 workflows:
