@@ -16,9 +16,10 @@ import os
 import os.path
 import re
 import sys
+from typing import TextIO
 
 
-def eprint(*args, **kwargs):
+def eprint(*args: object, **kwargs: str) -> None:
     "Print to standard error"
     print(*args, file=sys.stderr, **kwargs)
 
@@ -360,7 +361,7 @@ debug = False
 # debug = True
 
 
-def debug_print(*args, **kwargs):
+def debug_print(*args: object, **kwargs: str) -> None:
     """Print, only if the debug variable is set."""
     if debug:
         print(*args, **kwargs)
@@ -412,14 +413,21 @@ withinCommentRegex = re.compile(r"//|/\*(?!.*\/*/)|^[ \t]*\*[ \t]")
 startsWithCommentRegex = re.compile(r"^[ \t]*(//|/\*$|/\*[^@]|\*|void\b)")
 
 
-def insert_after_whitespace(insertion, s):
+def insert_after_whitespace(insertion: str, s: str) -> str:
     """Return s, with insertion inserted after its leading whitespace."""
     m = re.match(whitespaceRegex, s)
+    if m is None:
+        raise Exception("error: no match for leading whitespace")
     return s[0 : m.end(1)] + insertion + s[m.end(1) :]
 
 
-def fixup_loop(infile, outfile):
-    """Fix up formatting while reading from infile and writing to outfile."""
+def fixup_loop(infile: TextIO, outfile: TextIO) -> None:
+    """Fix up formatting while reading from infile and writing to outfile.
+
+    Args:
+        infile: the input file
+        outfile: the output file
+    """
     prev = ""  # previous line, which might end with a type annotation.
     for line in infile:
         # Handle trailing space after a voodoo comment
@@ -473,7 +481,7 @@ def fixup_loop(infile, outfile):
     outfile.write(prev)
 
 
-def base_annotation(annotation):
+def base_annotation(annotation: str) -> str:
     """Remove leading and trailing comment characters, spaces, arguments, and at sign.
     Example: base_annotation('/*@RequiresNonNull("FileIO.data_trace_state")*/' => 'RequiresNonNull'"""
     debug_print("base_annotation <=", annotation)

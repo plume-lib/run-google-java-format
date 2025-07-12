@@ -84,7 +84,35 @@ gjf_jar_name = "google-java-format-" + gjf_version + gjf_snapshot + "-all-deps.j
 gjf_url = gjf_url_base + gjf_jar_name
 
 
-def urlretrieve(url, filename):
+# For some reason, the "git ls-files" must be run from the root.
+# (I can run "git ls-files" from the command line in any directory.)
+def under_git(dir: str, filename: str) -> bool:
+    """Return true if `filename` in `dir` is under git control.
+
+    Args:
+        dir: the directory
+        filename: the file name
+
+    Returns:
+        true if `filename` in `dir` is under git control.
+    """
+    if not shutil.which("git"):
+        if debug:
+            print("no git executable found")
+        return False
+    with subprocess.Popen(
+        ["git", "ls-files", filename, "--error-unmatch"],
+        cwd=dir,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.STDOUT,
+    ) as p:
+        p.wait()
+        if debug:
+            print("p.returncode", p.returncode)
+        return p.returncode == 0
+
+
+def urlretrieve(url: str, filename: str) -> None:
     """Like urllib.urlretrieve."""
     with urlopen(url) as in_stream, open(filename, "wb") as out_file:
         copyfileobj(in_stream, out_file)
@@ -110,26 +138,6 @@ else:
         raise Exception(
             "Problem while retrieving " + gjf_url + " to " + gjf_jar_path
         ) from e
-
-
-# For some reason, the "git ls-files" must be run from the root.
-# (I can run "git ls-files" from the command line in any directory.)
-def under_git(dir, filename):
-    """Return true if filename in dir is under git control."""
-    if not shutil.which("git"):
-        if debug:
-            print("no git executable found")
-        return False
-    with subprocess.Popen(
-        ["git", "ls-files", filename, "--error-unmatch"],
-        cwd=dir,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.STDOUT,
-    ) as p:
-        p.wait()
-        if debug:
-            print("p.returncode", p.returncode)
-        return p.returncode == 0
 
 
 # Don't replace local with remote if local is under version control.
