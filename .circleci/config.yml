@@ -22,6 +22,7 @@ jobs:
           name: install dependencies
           command: |
             sudo apt update
+            sudo apt install pip
             sudo apt install pipx
             pipx ensurepath
             pip install ruff
