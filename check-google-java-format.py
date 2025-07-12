@@ -83,12 +83,12 @@ if not under_git(script_dir, "run-google-java-format.py"):
     except Exception:
         if os.path.exists(run_py):
             print(
-                "Couldn't retrieve fixup-google-java-format.py from "
+                "Couldn't retrieve run-google-java-format.py from "
                 + url
                 + "; using cached version"
             )
         else:
-            print("Couldn't retrieve fixup-google-java-format.py from " + url)
+            print("Couldn't retrieve run-google-java-format.py from " + url)
             sys.exit(1)
     os.chmod(
         run_py, os.stat(run_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
