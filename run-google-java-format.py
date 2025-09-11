@@ -62,7 +62,7 @@ if java_version == "1.8":
 elif java_version == "11":
     gjf_version_default = "1.24.0"
 else:
-    gjf_version_default = "1.26.0"
+    gjf_version_default = "1.28.0"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
 gjf_download_prefix = (
     "v" if re.match(r"^1\.[1-9][0-9]", gjf_version) else "google-java-format-"
@@ -205,7 +205,7 @@ result = subprocess.call(
 # Don't stop if there was an error, because google-java-format won't munge
 # files and we still want to run fixup-google-java-format.py.
 if result != 0:
-    print("Error when running google-java-format")
+    print("Error", result, "when running google-java-format")
     sys.exit(result)
 
 # Remove command-line arguments
@@ -218,5 +218,5 @@ if debug:
     print("Running fixup-google-java-format.py")
 result = subprocess.call([fixup_py] + files)
 if result != 0:
-    print("Error when running fixup-google-java-format.py")
+    print("Error", result, "when running fixup-google-java-format.py")
     sys.exit(result)
