@@ -5,6 +5,9 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0-browsers
 
+    environment:
+      TERM: dumb
+
     steps:
 
       - restore_cache:
@@ -33,7 +36,6 @@ jobs:
       - run: echo "TODO add some tests"
 
 workflows:
-  version: 2
   build:
     jobs:
       - build
