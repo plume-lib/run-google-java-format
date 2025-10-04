@@ -3,7 +3,7 @@ jobs:
   build:
 
     docker:
-      - image: cimg/openjdk:11.0.28-browsers
+      - image: cimg/openjdk:25.0-browsers
 
     environment:
       TERM: dumb
