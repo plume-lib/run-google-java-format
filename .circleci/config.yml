@@ -24,12 +24,9 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            sudo apt update
-            sudo apt install pip
-            sudo apt install pipx
-            pipx ensurepath
-            pip install ruff
-            pipx install mypy
+      - run:
+          name: Install Python `uv`
+          command: curl -LsSf https://astral.sh/uv/install.sh | sh
 
       - run: make style-check
 
