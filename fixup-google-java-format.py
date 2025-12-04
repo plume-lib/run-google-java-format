@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""The google-java-format program (https://github.com/google/google-java-format)
+"""Perform fixups after running the google-java-format program.
+
+The google-java-format program (https://github.com/google/google-java-format)
 reformats Java source code, but it creates poor formatting for annotations
 in comments.
 Run this script on files after running google-java-format, and it will perform
@@ -10,17 +12,14 @@ You typically will not run this program directly; it is run by
 run-google-java-format.py.
 """
 
-from __future__ import print_function
-
-import os
-import os.path
+import pathlib
 import re
 import sys
-from typing import TextIO, Any
+from typing import Any, TextIO
 
 
 def eprint(*args: object, **kwargs: Any) -> None:
-    "Print to standard error"
+    """Print to standard error."""
     print(*args, file=sys.stderr, **kwargs)
 
 
@@ -30,331 +29,339 @@ def eprint(*args: object, **kwargs: Any) -> None:
 # These are type annotations, which should NOT go on their own line.
 # A type annotation's @Target annotation contains "TYPE_USE".
 # This includes private type annotations used in Checker Framework tests.
-# To generate this list, in a file named `type-qualifiers.txt`:
-#   grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' $CHECKERFRAMEWORK/checker/src/test $CHECKERFRAMEWORK/checker-qual/src/main/java $CHECKERFRAMEWORK/framework/src/main/java $CHECKERFRAMEWORK/docs/examples/units-extension $CHECKERFRAMEWORK/framework/src/test/java $t/checker-framework-fork-t-rasmud-branch-nondet-checker/checker-qual/src/main/java/org/checkerframework/checker/determinism | grep -v '~' | sed 's/.*\///' | awk '{print $1} END {print "NotNull.java"; print "UbTop.java"; print "LbTop.java"; print "UB_TOP.java"; print "LB_TOP.java";}' | sed 's/\(.*\)\.java/        "\1",/' | LC_ALL=en_US.utf8 sort | uniq > type-qualifiers.txt
-typeAnnotations = set(
-    [
-        "A",
-        "ACCBottom",
-        "Acceleration",
-        "ACCTop",
-        "AinferBottom",
-        "AinferDefaultType",
-        "AinferImplicitAnno",
-        "AinferParent",
-        "AinferSibling1",
-        "AinferSibling2",
-        "AinferSiblingWithFields",
-        "AinferTop",
-        "AlwaysSafe",
-        "Angle",
-        "AnnoWithStringArg",
-        "Area",
-        "ArrayLen",
-        "ArrayLenRange",
-        "ArrayWithoutPackage",
-        "AwtAlphaCompositingRule",
-        "AwtColorSpace",
-        "AwtCursorType",
-        "AwtFlowLayout",
-        "B",
-        "BinaryName",
-        "BinaryNameOrPrimitiveType",
-        "BinaryNameWithoutPackage",
-        "BoolVal",
-        "Bottom",
-        "BottomQualifier",
-        "BottomThis",
-        "BottomVal",
-        "C",
-        "CalledMethods",
-        "CalledMethodsBottom",
-        "CalledMethodsPredicate",
-        "CanonicalName",
-        "CanonicalNameAndBinaryName",
-        "CanonicalNameOrEmpty",
-        "CanonicalNameOrPrimitiveType",
-        "CCBottom",
-        "CCTop",
-        "cd",
-        "ClassBound",
-        "ClassGetName",
-        "ClassGetSimpleName",
-        "ClassVal",
-        "ClassValBottom",
-        "CompilerMessageKey",
-        "CompilerMessageKeyBottom",
-        "Critical",
-        "Current",
-        "degrees",
-        "Det",
-        "DisbarUseBottom",
-        "DisbarUseTop",
-        "DoesNotMatchRegex",
-        "DotSeparatedIdentifiers",
-        "DotSeparatedIdentifiersOrPrimitiveType",
-        "DoubleVal",
-        "Encrypted",
-        "EnumVal",
-        "Even",
-        "FBCBottom",
-        "FEBottom",
-        "Fenum",
-        "FenumBottom",
-        "FenumTop",
-        "FETop",
-        "FieldDescriptor",
-        "FieldDescriptorForPrimitive",
-        "FieldDescriptorWithoutPackage",
-        "FlowExp",
-        "Force",
-        "Format",
-        "FormatBottom",
-        "FqBinaryName",
-        "Frequency",
-        "FullyQualifiedName",
-        "g",
-        "GTENegativeOne",
-        "GuardedBy",
-        "GuardedByBottom",
-        "GuardedByUnknown",
-        "GuardSatisfied",
-        "h",
-        "H1Bot",
-        "H1Invalid",
-        "H1Poly",
-        "H1S1",
-        "H1S2",
-        "H1Top",
-        "H2Bot",
-        "H2Poly",
-        "H2S1",
-        "H2S2",
-        "H2Top",
-        "Hz",
-        "I18nFormat",
-        "I18nFormatBottom",
-        "I18nFormatFor",
-        "I18nInvalidFormat",
-        "I18nUnknownFormat",
-        "Identifier",
-        "IdentifierOrPrimitiveType",
-        "IndexFor",
-        "IndexOrHigh",
-        "IndexOrLow",
-        "Initialized",
-        "InitializedFields",
-        "InitializedFieldsBottom",
-        "InternalForm",
-        "Interned",
-        "InternedDistinct",
-        "IntRange",
-        "IntVal",
-        "InvalidFormat",
-        "K",
-        "KeyFor",
-        "KeyForBottom",
-        "kg",
-        "kHz",
-        "km",
-        "km2",
-        "km3",
-        "kmPERh",
-        "kN",
-        "LbTop",
-        "LB_TOP",
-        "LeakedToResult",
-        "Length",
-        "LengthOf",
-        "LessThan",
-        "LessThanBottom",
-        "LessThanUnknown",
-        "LocalizableKey",
-        "LocalizableKeyBottom",
-        "Localized",
-        "LowerBoundBottom",
-        "LowerBoundUnknown",
-        "LTEqLengthOf",
-        "LTLengthOf",
-        "LTOMLengthOf",
-        "LubglbA",
-        "LubglbB",
-        "LubglbC",
-        "LubglbD",
-        "LubglbE",
-        "LubglbF",
-        "Luminance",
-        "m",
-        "m2",
-        "m3",
-        "Mass",
-        "MatchesRegex",
-        "MaybeAliased",
-        "MaybePresent",
-        "MethodDescriptor",
-        "MethodVal",
-        "MethodValBottom",
-        "min",
-        "MinLen",
-        "mm",
-        "mm2",
-        "mm3",
-        "mol",
-        "MonotonicNonNull",
-        "MonotonicOdd",
-        "mPERs",
-        "mPERs2",
-        "MustCall",
-        "MustCallAlias",
-        "MustCallUnknown",
-        "N",
-        "NegativeIndexFor",
-        "NewObject",
-        "NonDet",
-        "NonEmpty",
-        "NonLeaked",
-        "NonNegative",
-        "NonNull",
-        "NotCalledMethods",
-        "NotNull",
-        "NotQualifier",
-        "NTDBottom",
-        "NTDMiddle",
-        "NTDSide",
-        "NTDTop",
-        "Nullable",
-        "Odd",
-        "OptionalBottom",
-        "OrderNonDet",
-        "PatternA",
-        "PatternAB",
-        "PatternAC",
-        "PatternB",
-        "PatternBC",
-        "PatternBottomFull",
-        "PatternC",
-        "PatternUnknown",
-        "PolyDet",
-        "PolyEncrypted",
-        "PolyFenum",
-        "PolyIndex",
-        "PolyInitializedFields",
-        "PolyInterned",
-        "PolyKeyFor",
-        "PolyLength",
-        "PolyLowerBound",
-        "PolyLubglb",
-        "PolyMustCall",
-        "PolyNonEmpty",
-        "PolyNull",
-        "PolyPresent",
-        "PolyRegex",
-        "PolySameLen",
-        "PolySignature",
-        "PolySigned",
-        "PolyTainted",
-        "PolyTestAccumulation",
-        "PolyTestReflect",
-        "PolyTypeDeclDefault",
-        "PolyUI",
-        "PolyUnit",
-        "PolyUpperBound",
-        "PolyValue",
-        "PolyVariableNameDefault",
-        "Positive",
-        "Present",
-        "PrimitiveType",
-        "PropertyKey",
-        "PropertyKeyBottom",
-        "PurityUnqualified",
-        "Qualifier",
-        "radians",
-        "Regex",
-        "RegexBottom",
-        "ReportUnqualified",
-        "s",
-        "SameLen",
-        "SameLenBottom",
-        "SameLenUnknown",
-        "SearchIndexBottom",
-        "SearchIndexFor",
-        "SearchIndexUnknown",
-        "SignatureBottom",
-        "Signed",
-        "SignednessBottom",
-        "SignednessGlb",
-        "SignedPositive",
-        "Speed",
-        "StringVal",
-        "SubQual",
-        "Substance",
-        "SubstringIndexBottom",
-        "SubstringIndexFor",
-        "SubstringIndexUnknown",
-        "SuperQual",
-        "SwingBoxOrientation",
-        "SwingCompassDirection",
-        "SwingElementOrientation",
-        "SwingHorizontalOrientation",
-        "SwingSplitPaneOrientation",
-        "SwingTextOrientation",
-        "SwingTitleJustification",
-        "SwingTitlePosition",
-        "SwingVerticalOrientation",
-        "t",
-        "Tainted",
-        "Temperature",
-        "TestAccumulation",
-        "TestAccumulationBottom",
-        "TestAccumulationPredicate",
-        "TestReflectBottom",
-        "TestReflectSibling1",
-        "TestReflectSibling2",
-        "TestReflectTop",
-        "This",
-        "Time",
-        "TypeDeclDefaultBottom",
-        "TypeDeclDefaultMiddle",
-        "TypeDeclDefaultTop",
-        "UbTop",
-        "UB_TOP",
-        "UI",
-        "UnderInitialization",
-        "Unique",
-        "UnitsBottom",
-        "UnknownClass",
-        "UnknownCompilerMessageKey",
-        "UnknownFormat",
-        "UnknownInitialization",
-        "UnknownInterned",
-        "UnknownKeyFor",
-        "UnknownLocalizableKey",
-        "UnknownLocalized",
-        "UnknownMethod",
-        "UnknownNonEmpty",
-        "UnknownPropertyKey",
-        "UnknownRegex",
-        "UnknownSignedness",
-        "UnknownThis",
-        "UnknownUnits",
-        "UnknownVal",
-        "Unsigned",
-        "Untainted",
-        "UpperBoundBottom",
-        "UpperBoundLiteral",
-        "UpperBoundUnknown",
-        "ValueTypeAnno",
-        "VariableNameDefaultBottom",
-        "VariableNameDefaultMiddle",
-        "VariableNameDefaultTop",
-        "Volume",
-        "WholeProgramInferenceBottom",
-    ]
-)
+# To generate this list, in a file named `type-qualifiers.txt`, run:
+#   make type-qualifiers.txt
+type_annotations = {
+    "A",
+    "ACCBottom",
+    "ACCTop",
+    "Acceleration",
+    "AinferBottom",
+    "AinferDefaultType",
+    "AinferImplicitAnno",
+    "AinferParent",
+    "AinferSibling1",
+    "AinferSibling2",
+    "AinferSiblingWithFields",
+    "AinferTop",
+    "AlwaysSafe",
+    "Angle",
+    "AnnoWithStringArg",
+    "Area",
+    "ArrayLen",
+    "ArrayLenRange",
+    "ArrayWithoutPackage",
+    "AwtAlphaCompositingRule",
+    "AwtColorSpace",
+    "AwtCursorType",
+    "AwtFlowLayout",
+    "B",
+    "BinaryName",
+    "BinaryNameOrPrimitiveType",
+    "BinaryNameWithoutPackage",
+    "BoolVal",
+    "Bottom",
+    "BottomGrowShrink",
+    "BottomQualifier",
+    "BottomThis",
+    "BottomVal",
+    "C",
+    "CCBottom",
+    "CCTop",
+    "CalledMethods",
+    "CalledMethodsBottom",
+    "CalledMethodsPredicate",
+    "CanonicalName",
+    "CanonicalNameAndBinaryName",
+    "CanonicalNameOrEmpty",
+    "CanonicalNameOrPrimitiveType",
+    "ClassBound",
+    "ClassGetName",
+    "ClassGetSimpleName",
+    "ClassVal",
+    "ClassValBottom",
+    "CompilerMessageKey",
+    "CompilerMessageKeyBottom",
+    "Critical",
+    "Current",
+    "Det",
+    "DisbarUseBottom",
+    "DisbarUseTop",
+    "DoesNotMatchRegex",
+    "DotSeparatedIdentifiers",
+    "DotSeparatedIdentifiersOrPrimitiveType",
+    "DoubleVal",
+    "Encrypted",
+    "EnumVal",
+    "Even",
+    "FBCBottom",
+    "FEBottom",
+    "FETop",
+    "Fenum",
+    "FenumBottom",
+    "FenumTop",
+    "FieldDescriptor",
+    "FieldDescriptorForPrimitive",
+    "FieldDescriptorWithoutPackage",
+    "FlowExp",
+    "Force",
+    "Format",
+    "FormatBottom",
+    "FqBinaryName",
+    "Frequency",
+    "FullyQualifiedName",
+    "GTENegativeOne",
+    "GrowOnly",
+    "GuardSatisfied",
+    "GuardedBy",
+    "GuardedByBottom",
+    "GuardedByUnknown",
+    "H1Bot",
+    "H1Invalid",
+    "H1Poly",
+    "H1S1",
+    "H1S2",
+    "H1Top",
+    "H2Bot",
+    "H2Poly",
+    "H2S1",
+    "H2S2",
+    "H2Top",
+    "Hz",
+    "I18nFormat",
+    "I18nFormatBottom",
+    "I18nFormatFor",
+    "I18nInvalidFormat",
+    "I18nUnknownFormat",
+    "Identifier",
+    "IdentifierOrPrimitiveType",
+    "IndexFor",
+    "IndexOrHigh",
+    "IndexOrLow",
+    "Initialized",
+    "InitializedFields",
+    "InitializedFieldsBottom",
+    "IntRange",
+    "IntVal",
+    "InternalForm",
+    "Interned",
+    "InternedDistinct",
+    "InvalidFormat",
+    "K",
+    "KeyFor",
+    "KeyForBottom",
+    "LB_TOP",
+    "LTEqLengthOf",
+    "LTLengthOf",
+    "LTOMLengthOf",
+    "LbTop",
+    "LeakedToResult",
+    "Length",
+    "LengthOf",
+    "LessThan",
+    "LessThanBottom",
+    "LessThanUnknown",
+    "LocalizableKey",
+    "LocalizableKeyBottom",
+    "Localized",
+    "LowerBoundBottom",
+    "LowerBoundUnknown",
+    "LubglbA",
+    "LubglbB",
+    "LubglbC",
+    "LubglbD",
+    "LubglbE",
+    "LubglbF",
+    "Luminance",
+    "Mass",
+    "MatchesRegex",
+    "MaybeAliased",
+    "MaybePresent",
+    "MethodDescriptor",
+    "MethodVal",
+    "MethodValBottom",
+    "MinLen",
+    "MonotonicNonNull",
+    "MonotonicOdd",
+    "MustCall",
+    "MustCallAlias",
+    "MustCallUnknown",
+    "N",
+    "NTDBottom",
+    "NTDMiddle",
+    "NTDSide",
+    "NTDTop",
+    "NegativeIndexFor",
+    "NewObject",
+    "NonDet",
+    "NonEmpty",
+    "NonLeaked",
+    "NonNegative",
+    "NonNull",
+    "NotCalledMethods",
+    "NotNull",
+    "NotQualifier",
+    "Nullable",
+    "Odd",
+    "OptionalBottom",
+    "OrderNonDet",
+    "PatternA",
+    "PatternAB",
+    "PatternAC",
+    "PatternB",
+    "PatternBC",
+    "PatternBottomFull",
+    "PatternC",
+    "PatternUnknown",
+    "PolyDet",
+    "PolyEncrypted",
+    "PolyFenum",
+    "PolyGrowShrink",
+    "PolyIndex",
+    "PolyInitializedFields",
+    "PolyInterned",
+    "PolyKeyFor",
+    "PolyLength",
+    "PolyLowerBound",
+    "PolyLubglb",
+    "PolyMustCall",
+    "PolyNonEmpty",
+    "PolyNull",
+    "PolyPresent",
+    "PolyRegex",
+    "PolySameLen",
+    "PolySignature",
+    "PolySigned",
+    "PolyTainted",
+    "PolyTestAccumulation",
+    "PolyTestReflect",
+    "PolyTypeDeclDefault",
+    "PolyUI",
+    "PolyUnit",
+    "PolyUpperBound",
+    "PolyValue",
+    "PolyVariableNameDefault",
+    "Positive",
+    "Present",
+    "PrimitiveType",
+    "PropertyKey",
+    "PropertyKeyBottom",
+    "PurityUnqualified",
+    "Qualifier",
+    "Regex",
+    "RegexBottom",
+    "ReportUnqualified",
+    "SameLen",
+    "SameLenBottom",
+    "SameLenUnknown",
+    "SearchIndexBottom",
+    "SearchIndexFor",
+    "SearchIndexUnknown",
+    "Shrinkable",
+    "SignatureBottom",
+    "Signed",
+    "SignedPositive",
+    "SignednessBottom",
+    "SignednessGlb",
+    "Speed",
+    "SqlEvenQuotes",
+    "SqlOddQuotes",
+    "SqlQuotesBottom",
+    "SqlQuotesUnknown",
+    "StringVal",
+    "SubQual",
+    "Substance",
+    "SubstringIndexBottom",
+    "SubstringIndexFor",
+    "SubstringIndexUnknown",
+    "SuperQual",
+    "SwingBoxOrientation",
+    "SwingCompassDirection",
+    "SwingElementOrientation",
+    "SwingHorizontalOrientation",
+    "SwingSplitPaneOrientation",
+    "SwingTextOrientation",
+    "SwingTitleJustification",
+    "SwingTitlePosition",
+    "SwingVerticalOrientation",
+    "Tainted",
+    "Temperature",
+    "TestAccumulation",
+    "TestAccumulationBottom",
+    "TestAccumulationPredicate",
+    "TestReflectBottom",
+    "TestReflectSibling1",
+    "TestReflectSibling2",
+    "TestReflectTop",
+    "This",
+    "Time",
+    "TypeDeclDefaultBottom",
+    "TypeDeclDefaultMiddle",
+    "TypeDeclDefaultTop",
+    "UB_TOP",
+    "UI",
+    "UbTop",
+    "UncheckedShrinkable",
+    "UnderInitialization",
+    "Unique",
+    "UnitsBottom",
+    "UnknownClass",
+    "UnknownCompilerMessageKey",
+    "UnknownFormat",
+    "UnknownInitialization",
+    "UnknownInterned",
+    "UnknownKeyFor",
+    "UnknownLocalizableKey",
+    "UnknownLocalized",
+    "UnknownMethod",
+    "UnknownNonEmpty",
+    "UnknownPropertyKey",
+    "UnknownRegex",
+    "UnknownSignedness",
+    "UnknownThis",
+    "UnknownUnits",
+    "UnknownVal",
+    "UnshrinkableRef",
+    "Unsigned",
+    "Untainted",
+    "UpperBoundBottom",
+    "UpperBoundLiteral",
+    "UpperBoundUnknown",
+    "ValueTypeAnno",
+    "VariableNameDefaultBottom",
+    "VariableNameDefaultMiddle",
+    "VariableNameDefaultTop",
+    "Volume",
+    "WholeProgramInferenceBottom",
+    "cd",
+    "degrees",
+    "g",
+    "h",
+    "kHz",
+    "kN",
+    "kg",
+    "km",
+    "km2",
+    "km3",
+    "kmPERh",
+    "m",
+    "m2",
+    "m3",
+    "mPERs",
+    "mPERs2",
+    "min",
+    "mm",
+    "mm2",
+    "mm3",
+    "mol",
+    "radians",
+    "s",
+    "t",
+}
 
-# File .type-annotations can add to the typeAnnotations variable.
-if os.path.isfile(".type-annotations"):
-    with open(".type-annotations") as ta:
+# File .type-annotations can add to the type_annotations variable.
+if pathlib.Path(".type-annotations").is_file():
+    with pathlib.Path(".type-annotations").open() as ta:
         exec(ta.read())
 
 debug = False
@@ -369,9 +376,9 @@ def debug_print(*args: object, **kwargs: Any) -> None:
 
 # Two annotations in a row, or an annotation abutting array brackets "[]".
 # Space is inserted between.
-abuttingannoRegex = re.compile(r"(/\*@[A-Za-z0-9_]+\*/)(\[\]|/\*@[A-Za-z0-9_]+\*/)")
+abuttinganno_regex = re.compile(r"(/\*@[A-Za-z0-9_]+\*/)(\[\]|/\*@[A-Za-z0-9_]+\*/)")
 # Voodoo annotation with extra space after
-voodootrailingspaceRegex = re.compile(r"(/\*>>> ?@.*\bthis\*/) (\))")
+voodootrailingspace_regex = re.compile(r"(/\*>>> ?@.*\bthis\*/) (\))")
 
 # Matches the argument to an annotation.
 # 3 cases:
@@ -380,9 +387,9 @@ voodootrailingspaceRegex = re.compile(r"(/\*>>> ?@.*\bthis\*/) (\))")
 #   (.*)
 # The regex tries to safely permit "()" within a string in an annotation, such as
 #   @GuardedBy("c1.getFieldPure2()")
-annoargRegex = r'(?: *(?:\( *\)|\( *"[^"]*" *\)|\([^")][^)]*\)))?'
+annoarg_regex = r'(?: *(?:\( *\)|\( *"[^"]*" *\)|\([^")][^)]*\)))?'
 # Matches an annotation
-annoRegex = r"@[A-Za-z0-9_.]+" + annoargRegex
+anno_regex = r"@[A-Za-z0-9_.]+" + annoarg_regex
 
 # Matches, at the end of its line (in capturing group 2):
 #  * An annotation
@@ -394,28 +401,28 @@ annoRegex = r"@[A-Za-z0-9_.]+" + annoargRegex
 #    (Supported in main google-java-format as of April 26, 2017, but not yet in a release:
 #    https://github.com/google/google-java-format/commit/ca0c4d90cdbb46b3a2bf9c2b83d0bd558cccc41e )
 # The annotation will be moved to the beginning of the following line,
-# if it appears in typeAnnotations.
-trailingannoRegex = re.compile(
-    r"^(.*?)[ \t]*("
-    + annoRegex
-    + r"|/\*"
-    + annoRegex
-    + r"\*/|/\* *[A-Za-z0-9_]+ *= *\*/)$"
+# if it appears in type_annotations.
+trailinganno_regex = re.compile(
+    r"^(.*?)[ \t]*(" + anno_regex + r"|/\*" + anno_regex + r"\*/|/\* *[A-Za-z0-9_]+ *= *\*/)$"
 )
 
-whitespaceRegex = re.compile(r"^([ \t]*).*$")
+whitespace_regex = re.compile(r"^([ \t]*).*$")
 
-emptylineRegex = re.compile(r"^[ \t]*$")
+emptyline_regex = re.compile(r"^[ \t]*$")
 
 # Heuristic: matches if the line might be within a //, /*, or Javadoc comment.
-withinCommentRegex = re.compile(r"//|/\*(?!.*\/*/)|^[ \t]*\*[ \t]")
+within_comment_regex = re.compile(r"//|/\*(?!.*\/*/)|^[ \t]*\*[ \t]")
 
-startsWithCommentRegex = re.compile(r"^[ \t]*(//|/\*$|/\*[^@]|\*|void\b)")
+starts_with_comment_regex = re.compile(r"^[ \t]*(//|/\*$|/\*[^@]|\*|void\b)")
 
 
 def insert_after_whitespace(insertion: str, s: str) -> str:
-    """Return s, with insertion inserted after its leading whitespace."""
-    m = re.match(whitespaceRegex, s)
+    """Return s, with insertion inserted after its leading whitespace.
+
+    Returns:
+        s, with insertion inserted after its leading whitespace.
+    """
+    m = re.match(whitespace_regex, s)
     if m is None:
         raise Exception("error: no match for leading whitespace")
     return s[0 : m.end(1)] + insertion + s[m.end(1) :]
@@ -431,42 +438,42 @@ def fixup_loop(infile: TextIO, outfile: TextIO) -> None:
     prev = ""  # previous line, which might end with a type annotation.
     for line in infile:
         # Handle trailing space after a voodoo comment
-        line = voodootrailingspaceRegex.sub(r"\1\2", line)
+        line = voodootrailingspace_regex.sub(r"\1\2", line)
         # Handle abutting annotations in comments
-        m = re.search(abuttingannoRegex, line)
+        m = re.search(abuttinganno_regex, line)
         while m:
             debug_print("found abutting", line)
             line = line[0 : m.end(1)] + " " + line[m.start(2) :]
-            m = re.search(abuttingannoRegex, line)
+            m = re.search(abuttinganno_regex, line)
         # Don't move an annotation to the start of a comment line
-        if re.search(startsWithCommentRegex, line):
+        if re.search(starts_with_comment_regex, line):
             m = None
             debug_print("Don't prepend to comment", prev, line)
         else:
             # Handle annotations at end of line that should be at beginning of
             # next line.
-            m = re.search(trailingannoRegex, prev)
+            m = re.search(trailinganno_regex, prev)
             debug_print("trailing? (pre-loop)", m, prev, line)
         while m:
             debug_print("found trailing", prev, line)
             anno = m.group(2)
-            if base_annotation(anno) not in typeAnnotations:
+            if base_annotation(anno) not in type_annotations:
                 break
             debug_print("prev was:", prev)
             candidate_prev = prev[0 : m.end(1)] + prev[m.end(2) :]
             debug_print("candidate_prev is :", candidate_prev)
-            if re.search(withinCommentRegex, candidate_prev):
-                debug_print("withinCommentRegex prohibits action")
+            if re.search(within_comment_regex, candidate_prev):
+                debug_print("within_comment_regex prohibits action")
                 break
             prev = candidate_prev
             debug_print("prev is:", prev)
-            if re.search(emptylineRegex, prev):
+            if re.search(emptyline_regex, prev):
                 prev = ""
                 debug_print("prev is empty")
             debug_print("line was:", line)
             line = insert_after_whitespace(anno + " ", line)
             debug_print("line is :", line)
-            m = re.search(trailingannoRegex, prev)
+            m = re.search(trailinganno_regex, prev)
             debug_print("trailing? (post-loop-body)", m, prev, line)
             if re.search(r" try \($", prev):
                 candidate_line = prev.rstrip() + line.lstrip()
@@ -483,14 +490,17 @@ def fixup_loop(infile: TextIO, outfile: TextIO) -> None:
 
 def base_annotation(annotation: str) -> str:
     """Remove leading and trailing comment characters, spaces, arguments, and at sign.
-    Example: base_annotation('/*@RequiresNonNull("FileIO.data_trace_state")*/' => 'RequiresNonNull'"""
+
+    Example: base_annotation('/*@RequiresNonNull("FileIO.data_trace_state")*/' => 'RequiresNonNull'
+
+    Returns:
+        the annotation name without arguments or at sign
+    """
     debug_print("base_annotation <=", annotation)
 
     # Remove comments
-    if annotation.startswith("/*"):
-        annotation = annotation[2:]
-    if annotation.endswith("*/"):
-        annotation = annotation[:-2]
+    annotation = annotation.removeprefix("/*")
+    annotation = annotation.removesuffix("*/")
 
     # Remove arguments
     idx = annotation.find("(")
@@ -503,8 +513,7 @@ def base_annotation(annotation: str) -> str:
         annotation = annotation[idx + 1 :]
 
     annotation = annotation.strip()
-    if annotation.startswith("@"):
-        annotation = annotation[1:]
+    annotation = annotation.removeprefix("@")
     debug_print("base_annotation =>", annotation)
     return annotation
 
@@ -514,7 +523,6 @@ if len(sys.argv) == 1:
 else:
     for fname in sys.argv[1:]:
         outfname = fname + ".out"
-        with open(fname, "r") as infile:
-            with open(outfname, "w") as outfile:
-                fixup_loop(infile, outfile)
-        os.rename(outfname, fname)
+        with pathlib.Path(fname).open("r") as infile, pathlib.Path(outfname).open("w") as outfile:
+            fixup_loop(infile, outfile)
+        pathlib.Path(outfname).rename(fname)

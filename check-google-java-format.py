@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""
+
+"""A wrapper around the google-java-format program, with improvements.
+
 This script checks whether the files supplied on the command line conform
 to the Google Java style (as enforced by the google-java-format program,
 but with improvements to the formatting of annotations in comments).
@@ -12,16 +14,14 @@ You could invoke this program, for example, in a git pre-commit hook.
 # TODO: Thanks to https://github.com/google/google-java-format/pull/106
 # this script can be eliminated, or its interface simplified.
 
-from __future__ import print_function
 import filecmp
-import os
-import os.path
+import pathlib
 import shutil
 import stat
 import subprocess
 import sys
 import tempfile
-
+from pathlib import Path
 from shutil import copyfileobj
 
 try:
@@ -32,21 +32,22 @@ except ImportError:
 debug = False
 # debug = True
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-run_py = os.path.join(script_dir, "run-google-java-format.py")
+script_dir = Path.resolve(Path(__file__)).parent
+run_py_name = "run-google-java-format.py"
+run_py_path = script_dir / run_py_name
 
 
 # For some reason, the "git ls-files" must be run from the root.
 # (I can run "git ls-files" from the command line in any directory.)
-def under_git(dir: str, filename: str) -> bool:
-    """Return true if `filename` in `dir` is under git control.
+def under_git(directory: Path, filename: str) -> bool:
+    """Return true if `filename` in `directory` is under git control.
 
     Args:
-        dir: the directory
+        directory: the directory
         filename: the file name
 
     Returns:
-        true if `filename` in `dir` is under git control.
+        true if `filename` in `directory` is under git control.
     """
     if not shutil.which("git"):
         if debug:
@@ -54,7 +55,7 @@ def under_git(dir: str, filename: str) -> bool:
         return False
     with subprocess.Popen(
         ["git", "ls-files", filename, "--error-unmatch"],
-        cwd=dir,
+        cwd=directory,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
     ) as p:
@@ -64,42 +65,37 @@ def under_git(dir: str, filename: str) -> bool:
         return p.returncode == 0
 
 
-def urlretrieve(url: str, filename: str) -> None:
+def urlretrieve(url: str, filename: Path) -> None:
     """Like urllib.urlretrieve."""
-    with urlopen(url) as in_stream, open(filename, "wb") as out_file:
+    with urlopen(url) as in_stream, pathlib.Path(filename).open("wb") as out_file:
         copyfileobj(in_stream, out_file)
 
 
 # Don't replace local with remote if local is under version control.
 # It would be better to just test whether the remote is newer than local,
 # but raw GitHub URLs don't have the necessary last-modified information.
-if not under_git(script_dir, "run-google-java-format.py"):
-    url = (
-        "https://raw.githubusercontent.com/"
-        + "plume-lib/run-google-java-format/master/run-google-java-format.py"
-    )
+if not under_git(script_dir, run_py_name):
+    url = "https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/" + run_py_name
     try:
-        urlretrieve(url, run_py)
+        urlretrieve(url, run_py_path)
     except Exception:
-        if os.path.exists(run_py):
-            print(
-                "Couldn't retrieve run-google-java-format.py from "
-                + url
-                + "; using cached version"
-            )
+        if run_py_path.exists():
+            print("Couldn't retrieve " + run_py_name + " from " + url + "; using cached version")
         else:
-            print("Couldn't retrieve run-google-java-format.py from " + url)
+            print("Couldn't retrieve " + run_py_name + " from " + url)
             sys.exit(1)
-    os.chmod(
-        run_py, os.stat(run_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
-    )
+    run_py_path.chmod(run_py_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 temp_dir = tempfile.mkdtemp(prefix="check-google-java-format-")
 
 
 def temporary_file_name() -> str:
-    """Return the name of a temporary file."""
-    return os.path.join(temp_dir, next(tempfile._get_candidate_names()))  # type: ignore[attr-defined]
+    """Return the name of a temporary file.
+
+    Returns:
+        the name of a temporary file.
+    """
+    return temp_dir / next(tempfile._get_candidate_names())  # type: ignore[attr-defined] # noqa: SLF001
 
 
 def cleanup() -> None:
@@ -111,7 +107,7 @@ files = sys.argv[1:]
 if len(files) == 0:
     content = sys.stdin.read()
     fname = temporary_file_name() + ".java"
-    with open(fname, "w") as outfile:
+    with pathlib.Path(fname).open("w") as outfile:
         print(content, file=outfile)
     files = [fname]
 
@@ -119,16 +115,16 @@ temps = []
 cmdlineargs = [f for f in files if f.startswith("-")]
 files = [f for f in files if not f.startswith("-")]
 for fname in files:
-    ftemp = temporary_file_name() + "_" + os.path.basename(fname)
+    ftemp = temporary_file_name() + "_" + pathlib.Path(fname).name
     shutil.copyfile(fname, ftemp)
     temps.append(ftemp)
 
 if debug:
-    print("Running run-google-java-format.py")
+    print("Running " + run_py_name)
 # Problem:  if a file is syntactically illegal, this outputs the temporary file
 # name rather than the real file name.
 # Minor optimization: To save one process creation, could call directly in Python.
-result = subprocess.call([run_py] + cmdlineargs + temps)
+result = subprocess.call([run_py_path, *cmdlineargs, *temps])
 if result != 0:
     cleanup()
     sys.exit(result)

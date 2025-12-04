@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-"""
-This script reformats each file supplied on the command line according to
-the Google Java style (by calling out to the google-java-format program,
-https://github.com/google/google-java-format), but with improvements to
-the formatting of type annotations and annotations in comments.
+"""Reformat each file supplied on the command line.
+
+Yields the Google Java style (by calling out to the google-java-format
+program, https://github.com/google/google-java-format), but with
+improvements to the formatting of type annotations and annotations in
+comments.
 """
 
-from __future__ import print_function
 import os
+import pathlib
 import re
-import stat
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
-
+from pathlib import Path
 from shutil import copyfileobj
 
 try:
@@ -25,10 +26,11 @@ except ImportError:
 debug = False
 # debug = True
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
+script_dir = Path.resolve(Path(__file__)).parent
 # Rather than calling out to the shell, it would be better to
 # call directly in Python.
-fixup_py = os.path.join(script_dir, "fixup-google-java-format.py")
+fixup_py_name = "fixup-google-java-format.py"
+fixup_py_path = script_dir / fixup_py_name
 
 # java_version_string is either 1.8 or nothing.
 # For JDK  8, `java -version` has the form: openjdk version "1.8.0_292"
@@ -41,7 +43,8 @@ if debug:
     print("java_version_string =", java_version_string)
 match = re.search(r'"(\d+(\.\d+)?).*"', java_version_string)
 if not match:
-    raise Exception(f'no match for java version string "{java_version_string}"')
+    msg = f'no match for java version string "{java_version_string}"'
+    raise Exception(msg)
 java_version = match.groups()[0]
 
 ## To use an officially released version.
@@ -64,9 +67,7 @@ elif java_version == "11":
 else:
     gjf_version_default = "1.28.0"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
-gjf_download_prefix = (
-    "v" if re.match(r"^1\.[1-9][0-9]", gjf_version) else "google-java-format-"
-)
+gjf_download_prefix = "v" if re.match(r"^1\.[1-9][0-9]", gjf_version) else "google-java-format-"
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
 gjf_url_base = os.getenv(
     "GJF_URL_BASE",
@@ -89,15 +90,15 @@ gjf_url = gjf_url_base + gjf_jar_name
 
 # For some reason, the "git ls-files" must be run from the root.
 # (I can run "git ls-files" from the command line in any directory.)
-def under_git(dir: str, filename: str) -> bool:
-    """Return true if `filename` in `dir` is under git control.
+def under_git(directory: Path, filename: str) -> bool:
+    """Return true if `filename` in `directory` is under git control.
 
     Args:
-        dir: the directory
+        directory: the directory
         filename: the file name
 
     Returns:
-        true if `filename` in `dir` is under git control.
+        true if `filename` in `directory` is under git control.
     """
     if not shutil.which("git"):
         if debug:
@@ -105,7 +106,7 @@ def under_git(dir: str, filename: str) -> bool:
         return False
     with subprocess.Popen(
         ["git", "ls-files", filename, "--error-unmatch"],
-        cwd=dir,
+        cwd=directory,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
     ) as p:
@@ -115,61 +116,54 @@ def under_git(dir: str, filename: str) -> bool:
         return p.returncode == 0
 
 
-def urlretrieve(url: str, filename: str) -> None:
+def urlretrieve(url: str, filename: Path) -> None:
     """Like urllib.urlretrieve."""
-    with urlopen(url) as in_stream, open(filename, "wb") as out_file:
+    with urlopen(url) as in_stream, pathlib.Path(filename).open("wb") as out_file:
         copyfileobj(in_stream, out_file)
 
 
 # Set gjf_jar_path, or retrieve it if it doesn't appear locally. Does not update
 # from remove path if remote is newer, so never change files on the server.
-if os.path.isfile(os.path.join(script_dir, gjf_jar_name)):
-    gjf_jar_path = os.path.join(script_dir, gjf_jar_name)
-elif os.path.isfile(os.path.join(os.path.dirname(script_dir), "lib", gjf_jar_name)):
-    gjf_jar_path = os.path.join(os.path.dirname(script_dir), "lib", gjf_jar_name)
+candidate1 = script_dir / gjf_jar_name
+candidate2 = script_dir.parent / "lib" / gjf_jar_name
+if candidate1.is_file():
+    gjf_jar_path = candidate1
+elif candidate2.is_file():
+    gjf_jar_path = candidate2
 else:
-    gjf_jar_path = os.path.join(script_dir, gjf_jar_name)
+    gjf_jar_path = candidate1
     # print("retrieving " + gjf_url + " to " + gjf_jar_path)
     try:
         # Download to a temporary file, then rename atomically.
         # This avoids race conditions with other run-google-java-format processes.
         # "delete=False" because the file will be renamed.
         with tempfile.NamedTemporaryFile(dir=script_dir, delete=False) as f:
-            urlretrieve(gjf_url, f.name)
-            os.rename(f.name, gjf_jar_path)
+            urlretrieve(gjf_url, Path(f.name))
+            pathlib.Path(f.name).rename(gjf_jar_path)
     except Exception as e:
-        raise Exception(
-            "Problem while retrieving " + gjf_url + " to " + gjf_jar_path
-        ) from e
+        raise Exception("Problem while retrieving " + gjf_url + " to " + str(gjf_jar_path)) from e
 
 
 # Don't replace local with remote if local is under version control.
 # It would be better to just test whether the remote is newer than local,
 # but raw GitHub URLs don't have the necessary last-modified information.
-if not under_git(script_dir, "fixup-google-java-format.py"):
+if not under_git(script_dir, fixup_py_name):
     url = (
-        "https://raw.githubusercontent.com/"
-        + "plume-lib/run-google-java-format/master/fixup-google-java-format.py"
+        "https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/" + fixup_py_name
     )
     try:
-        urlretrieve(url, fixup_py)
+        urlretrieve(url, fixup_py_path)
     except Exception:
-        if os.path.exists(fixup_py):
-            print(
-                "Couldn't retrieve fixup-google-java-format.py from "
-                + url
-                + "; using cached version"
-            )
+        if pathlib.Path(fixup_py_path).exists():
+            print("Couldn't retrieve " + fixup_py_name + " from " + url + "; using cached version")
         else:
-            print("Couldn't retrieve fixup-google-java-format.py from " + url)
+            print("Couldn't retrieve " + fixup_py_name + " from " + url)
             sys.exit(1)
-    os.chmod(
-        fixup_py, os.stat(fixup_py).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
-    )
+    fixup_py_path.chmod(fixup_py_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 if debug:
     print("script_dir:", script_dir)
-    print("fixup_py: ", fixup_py)
+    print("fixup_py_path: ", fixup_py_path)
     print("gjf_jar_path: ", gjf_jar_path)
 
 files = sys.argv[1:]
@@ -196,9 +190,7 @@ else:
         "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
     ]
 
-result = subprocess.call(
-    ["java"] + jdk_opens + ["-jar", gjf_jar_path, "--replace"] + files
-)
+result = subprocess.call(["java", *jdk_opens, "-jar", str(gjf_jar_path), "--replace", *files])
 
 ## This if statement used to be commented out, because google-java-format
 ## crashed a lot.  It seems more stable now.
@@ -215,8 +207,8 @@ if not files:
     sys.exit(0)
 
 if debug:
-    print("Running fixup-google-java-format.py")
-result = subprocess.call([fixup_py] + files)
+    print("Running " + fixup_py_name)
+result = subprocess.call([fixup_py_path, *files])
 if result != 0:
-    print("Error", result, "when running fixup-google-java-format.py")
+    print("Error", result, "when running " + fixup_py_name)
     sys.exit(result)
