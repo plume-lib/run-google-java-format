@@ -22,9 +22,6 @@ jobs:
             - ".git"
 
       - run:
-          name: install dependencies
-          command: |
-      - run:
           name: Install Python `uv`
           command: curl -LsSf https://astral.sh/uv/install.sh | sh
 
