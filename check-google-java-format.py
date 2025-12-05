@@ -95,7 +95,7 @@ def temporary_file_name() -> str:
     Returns:
         the name of a temporary file.
     """
-    return temp_dir / next(tempfile._get_candidate_names())  # type: ignore[attr-defined] # noqa: SLF001
+    return str(Path(temp_dir) / next(tempfile._get_candidate_names()))  # type: ignore[attr-defined] # noqa: SLF001
 
 
 def cleanup() -> None:
