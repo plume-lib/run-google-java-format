@@ -1,3 +1,5 @@
+.PHONY: all
+
 all: style-fix style-check
 
 type-qualifiers.txt:
@@ -7,30 +9,13 @@ type-qualifiers.txt:
 	| sed 's/\(.*\)\.java/    "\1",/' \
 	| LC_COLLATE=C sort | uniq > $@
 
+.PHONY: tags
 TAGS: tags
 tags:
 	etags *.py
 
-### Code style
-
-style-fix: python-style-fix
-style-check: python-style-check python-typecheck
-PYTHON_FILES:=$(wildcard **/*.py) $(shell grep -r -l --exclude-dir=.git --exclude-dir=.venv --exclude='*.py' --exclude='#*' --exclude='*~' --exclude='*.tar' --exclude=gradlew --exclude=lcb_runner '^\#! \?\(/bin/\|/usr/bin/\|/usr/bin/env \)python')
-python-style-fix:
-ifneq (${PYTHON_FILES},)
-#	@uvx ruff --version
-	@uvx ruff format ${PYTHON_FILES}
-	@uvx ruff -q check ${PYTHON_FILES} --fix
+# Code style; defines `style-check` and `style-fix`.
+ifeq (,$(wildcard .plume-scripts))
+dummy != git clone -q https://github.com/plume-lib/plume-scripts.git .plume-scripts
 endif
-python-style-check:
-ifneq (${PYTHON_FILES},)
-#	@uvx ruff --version
-	@uvx ruff -q format --check ${PYTHON_FILES}
-	@uvx ruff -q check ${PYTHON_FILES}
-endif
-python-typecheck:
-ifneq (${PYTHON_FILES},)
-	@uv run ty check
-endif
-showvars::
-	@echo "PYTHON_FILES=${PYTHON_FILES}"
+include .plume-scripts/code-style.mak
