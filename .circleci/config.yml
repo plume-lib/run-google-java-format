@@ -22,6 +22,9 @@ jobs:
             - ".git"
 
       - run:
+          name: Install markdownlint
+          command: npm install markdownlint-cli2 --global
+      - run:
           name: Install Python `uv`
           command: curl -LsSf https://astral.sh/uv/install.sh | sh
 
