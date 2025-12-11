@@ -1,4 +1,6 @@
 .plume-scripts
+.markdownlint-cli2.yaml
+.pymarkdown
 .ruff.toml
 # These files are downloaded to this directory from elsewhere.
 google-java-format-*-all-deps.jar
