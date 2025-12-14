@@ -77,7 +77,9 @@ if you can create a version that also works on Windows, please contribute it.
 
 ### Makefile
 
-<!-- markdownlint-disable MD010 MD013 --><!-- tabs, long lines -->
+<!-- markdownlint-disable no-hard-tabs -->
+<!-- pyml disable no-hard-tabs -->
+
 ```make
 JAVA_FILES_TO_FORMAT ?= $(shell find src -name '*.java' -print | grep -v '\.\#' \
   | grep -v WeakHasherMap.java | grep -v WeakIdentityHashMap.java \
@@ -99,7 +101,9 @@ check-format:
 	@./.run-google-java-format/check-google-java-format.py ${JAVA_FILES_TO_FORMAT} \
           || (echo "Try running:  make reformat" && /bin/false)
 ```
-<!-- markdownlint-enable MD010 MD013 --><!-- tabs, long lines -->
+
+<!-- pyml enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs -->
 
 ### Ant `build.xml`
 
@@ -112,7 +116,9 @@ At the top of your Ant `build.xml` file, augment the `<project>` block:
 
 Then, add this:
 
-<!-- markdownlint-disable MD010 MD013 --><!-- tabs, long lines -->
+<!-- markdownlint-disable no-hard-tabs -->
+<!-- pyml disable no-hard-tabs -->
+
 ```xml
   <!-- Adjust for your project. -->
   <fileset id="formatted.java.files" dir="." includes="**/*.java" excludes="**/checker/jdk/,**/stubparser/,**/eclipse/,**/nullness-javac-errors/"/>
@@ -185,13 +191,17 @@ Then, add this:
     </fail>
   </target>
 ```
-<!-- markdownlint-enable MD010 MD013 --><!-- tabs, long lines -->
+
+<!-- pyml enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs -->
 
 ### Gradle `build.gradle`
 
 Customize per your requirements, such as excluding generated `.java` files from formatting.
 
-<!-- markdownlint-disable MD010 MD013 --><!-- tabs, long lines -->
+<!-- markdownlint-disable no-hard-tabs -->
+<!-- pyml disable no-hard-tabs -->
+
 ```gradle
 task getCodeFormatScripts {
   description "Obtain the run-google-java-format scripts"
@@ -246,9 +256,13 @@ task reformat(type: Exec, dependsOn: [getCodeFormatScripts, pythonIsInstalled], 
   args pythonArgs
 }
 ```
-<!-- markdownlint-enable MD010 MD013 --><!-- tabs, long lines -->
 
-<!-- markdownlint-disable MD010 MD013 --><!-- tabs, long lines -->
+<!-- pyml enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs -->
+
+<!-- markdownlint-disable no-hard-tabs -->
+<!-- pyml disable no-hard-tabs -->
+
 <!--
 It ought to be possible to replace the `getCodeFormatScripts` task above
 with the below, but DO NOT DO SO because in some cases it corrupts your
@@ -278,7 +292,9 @@ task getCodeFormatScripts {
   }
 }
 -->
-<!-- markdownlint-enable MD010 MD013 --><!-- tabs, long lines -->
+
+<!-- pyml enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs -->
 
 ### Git pre-commit hook
 
@@ -286,7 +302,9 @@ Here is an example of what you might put in a Git pre-commit hook.
 This only checks the files that are being comitted,
 which is much faster than checking all files.
 
-<!-- markdownlint-disable MD010 MD013 --><!-- tabs, long lines -->
+<!-- markdownlint-disable no-hard-tabs -->
+<!-- pyml disable no-hard-tabs -->
+
 ```sh
 CHANGED_JAVA_FILES=`git diff --staged --name-only --diff-filter=ACM \
   | grep '\.java$' | grep -v '/ignored-directory/' ` || true
@@ -300,7 +318,9 @@ if [ ! -z "$CHANGED_JAVA_FILES" ]; then
     || (echo "Try running:  make reformat" && /bin/false)
 fi
 ```
-<!-- markdownlint-enable MD010 MD013 --><!-- tabs, long lines -->
+
+<!-- pyml enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs -->
 
 You will also want to add `.run-google-java-format` to your
 `~/.gitignore-global` file or your project's `.gitignore` file.
@@ -311,7 +331,9 @@ google-java-format will complain about Java files with trailing spaces.
 Here is code for your Git pre-commit hook that finds all files that have
 trailing spaces.
 
-<!-- markdownlint-disable MD010 MD013 --><!-- tabs, long lines -->
+<!-- markdownlint-disable no-hard-tabs -->
+<!-- pyml disable no-hard-tabs -->
+
 ```sh
 CHANGED_FILES=`git diff --staged --name-only --diff-filter=ACM \
   | grep -v '.class$' | grep -v '.gz$'` | grep -v '.jar$'` \
@@ -324,7 +346,9 @@ if [ ! -z "$CHANGED_FILES" ]; then
   fi
 fi
 ```
-<!-- markdownlint-enable MD010 MD013 --><!-- tabs, long lines -->
+
+<!-- pyml enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs -->
 
 ## Dealing with large changes when reformatting your codebase
 
