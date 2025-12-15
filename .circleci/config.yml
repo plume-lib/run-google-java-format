@@ -24,7 +24,7 @@ jobs:
       - run: sudo apt update
       - run:
           name: Install dependencies via apt
-          command: sudo apt -y install shfmt shellcheck devscripts
+          command: sudo apt -y install devscripts shellcheck shfmt yamllint
       - run:
           name: Install markdownlint
           command: sudo npm install markdownlint-cli2 --global
