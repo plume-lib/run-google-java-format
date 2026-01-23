@@ -361,8 +361,8 @@ type_annotations = {
 
 # File .type-annotations can add to the type_annotations variable.
 if pathlib.Path(".type-annotations").is_file():
-    with pathlib.Path(".type-annotations").open() as ta:
-        exec(ta.read())
+    type_annotations_text = pathlib.Path(".type-annotations").read_text()
+    exec(type_annotations_text)
 
 debug = False
 # debug = True
