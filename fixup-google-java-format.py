@@ -29,7 +29,7 @@ def eprint(*args: object, **kwargs: Any) -> None:
 # These are type annotations, which should NOT go on their own line.
 # A type annotation's @Target annotation contains "TYPE_USE".
 # This includes private type annotations used in Checker Framework tests.
-# To generate this list, in a file named `type-qualifiers.txt`, run:
+# To generate this list, into a file named `type-qualifiers.txt`, run:
 #   make type-qualifiers.txt
 type_annotations = {
     "A",
