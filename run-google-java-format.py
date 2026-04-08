@@ -17,7 +17,7 @@ import tempfile
 from pathlib import Path
 
 try:
-    from urllib import urlopen  # type: ignore[attr-defined]
+    from urllib import urlopen  # ty: ignore[unresolved-import]
 except ImportError:
     from urllib.request import urlopen
 
@@ -151,7 +151,7 @@ if not under_git(script_dir, fixup_py_name):
     )
     try:
         urlretrieve(url, fixup_py_path)
-    except Exception:
+    except Exception:  # noqa: BLE001
         if fixup_py_path.exists():
             print("Couldn't retrieve " + fixup_py_name + " from " + url + "; using cached version")
         else:

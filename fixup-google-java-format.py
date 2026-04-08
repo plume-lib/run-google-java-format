@@ -17,7 +17,6 @@ import re
 import sys
 from typing import Any, TextIO
 
-
 # pylint: disable=line-too-long, multiple-statements
 
 # Keep this list in sync with FormatAnnotationsStep.java in spotless.
@@ -357,7 +356,7 @@ type_annotations = {
 # File .type-annotations can add to the type_annotations variable.
 _type_annotations_path = pathlib.Path(".type-annotations")
 if _type_annotations_path.is_file():
-    exec(_type_annotations_path.read_text())
+    exec(_type_annotations_path.read_text())  # noqa: S102
 
 debug = False
 # debug = True
