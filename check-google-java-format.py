@@ -15,14 +15,12 @@ You could invoke this program, for example, in a git pre-commit hook.
 # this script can be eliminated, or its interface simplified.
 
 import filecmp
-import pathlib
 import shutil
 import stat
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from shutil import copyfileobj
 
 try:
     from urllib import urlopen  # type: ignore[attr-defined]
@@ -32,7 +30,7 @@ except ImportError:
 debug = False
 # debug = True
 
-script_dir = Path.resolve(Path(__file__)).parent
+script_dir = Path(__file__).resolve().parent
 run_py_name = "run-google-java-format.py"
 run_py_path = script_dir / run_py_name
 
@@ -67,8 +65,8 @@ def under_git(directory: Path, filename: str) -> bool:
 
 def urlretrieve(url: str, filename: Path) -> None:
     """Like urllib.urlretrieve."""
-    with urlopen(url) as in_stream, pathlib.Path(filename).open("wb") as out_file:
-        copyfileobj(in_stream, out_file)
+    with urlopen(url) as in_stream, filename.open("wb") as out_file:
+        shutil.copyfileobj(in_stream, out_file)
 
 
 # Don't replace local with remote if local is under version control.
@@ -107,7 +105,7 @@ files = sys.argv[1:]
 if len(files) == 0:
     content = sys.stdin.read()
     fname = temporary_file_name() + ".java"
-    with pathlib.Path(fname).open("w") as outfile:
+    with Path(fname).open("w") as outfile:
         print(content, file=outfile)
     files = [fname]
 
@@ -115,7 +113,7 @@ temps = []
 cmdlineargs = [f for f in files if f.startswith("-")]
 files = [f for f in files if not f.startswith("-")]
 for fname in files:
-    ftemp = temporary_file_name() + "_" + pathlib.Path(fname).name
+    ftemp = temporary_file_name() + "_" + Path(fname).name
     shutil.copyfile(fname, ftemp)
     temps.append(ftemp)
 
