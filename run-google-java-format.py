@@ -8,7 +8,6 @@ comments.
 """
 
 import os
-import pathlib
 import re
 import shutil
 import stat
@@ -16,17 +15,16 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from shutil import copyfileobj
 
 try:
-    from urllib import urlopen  # type: ignore[attr-defined]
+    from urllib import urlopen  # ty: ignore[unresolved-import]
 except ImportError:
     from urllib.request import urlopen
 
 debug = False
 # debug = True
 
-script_dir = Path.resolve(Path(__file__)).parent
+script_dir = Path(__file__).resolve().parent
 # Rather than calling out to the shell, it would be better to
 # call directly in Python.
 fixup_py_name = "fixup-google-java-format.py"
@@ -118,8 +116,8 @@ def under_git(directory: Path, filename: str) -> bool:
 
 def urlretrieve(url: str, filename: Path) -> None:
     """Like urllib.urlretrieve."""
-    with urlopen(url) as in_stream, pathlib.Path(filename).open("wb") as out_file:
-        copyfileobj(in_stream, out_file)
+    with urlopen(url) as in_stream, filename.open("wb") as out_file:
+        shutil.copyfileobj(in_stream, out_file)
 
 
 # Set gjf_jar_path, or retrieve it if it doesn't appear locally. Does not update
@@ -139,7 +137,7 @@ else:
         # "delete=False" because the file will be renamed.
         with tempfile.NamedTemporaryFile(dir=script_dir, delete=False) as f:
             urlretrieve(gjf_url, Path(f.name))
-            pathlib.Path(f.name).rename(gjf_jar_path)
+            Path(f.name).rename(gjf_jar_path)
     except Exception as e:
         raise Exception("Problem while retrieving " + gjf_url + " to " + str(gjf_jar_path)) from e
 
@@ -153,8 +151,8 @@ if not under_git(script_dir, fixup_py_name):
     )
     try:
         urlretrieve(url, fixup_py_path)
-    except Exception:
-        if pathlib.Path(fixup_py_path).exists():
+    except Exception:  # noqa: BLE001
+        if fixup_py_path.exists():
             print("Couldn't retrieve " + fixup_py_name + " from " + url + "; using cached version")
         else:
             print("Couldn't retrieve " + fixup_py_name + " from " + url)
@@ -200,7 +198,6 @@ if result != 0:
     print("Error", result, "when running google-java-format")
     sys.exit(result)
 
-# Remove command-line arguments
 files = [f for f in files if not f.startswith("-")]
 # Exit if no files were supplied (maybe "--help" was supplied)
 if not files:

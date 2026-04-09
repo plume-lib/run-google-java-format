@@ -17,12 +17,6 @@ import re
 import sys
 from typing import Any, TextIO
 
-
-def eprint(*args: object, **kwargs: Any) -> None:
-    """Print to standard error."""
-    print(*args, file=sys.stderr, **kwargs)
-
-
 # pylint: disable=line-too-long, multiple-statements
 
 # Keep this list in sync with FormatAnnotationsStep.java in spotless.
@@ -360,9 +354,9 @@ type_annotations = {
 }
 
 # File .type-annotations can add to the type_annotations variable.
-if pathlib.Path(".type-annotations").is_file():
-    type_annotations_text = pathlib.Path(".type-annotations").read_text()
-    exec(type_annotations_text)
+_type_annotations_path = pathlib.Path(".type-annotations")
+if _type_annotations_path.is_file():
+    exec(_type_annotations_path.read_text())  # noqa: S102
 
 debug = False
 # debug = True
