@@ -1,7 +1,7 @@
 [project]
 name = "run-google-java-format"
 version = "0.1.0"
-description = "Add your description here"
+description = "Scripts to download, run, and check google-java-format, with formatting improvements."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []

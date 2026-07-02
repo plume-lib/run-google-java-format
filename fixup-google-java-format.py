@@ -6,7 +6,7 @@ reformats Java source code, but it creates poor formatting for annotations
 in comments.
 Run this script on files after running google-java-format, and it will perform
 small changes in place to improve formatting of annotations in comments.
-If called with no arguments, it reads from and writes to standard output.
+If called with no arguments, it reads from standard input and writes to standard output.
 
 You typically will not run this program directly; it is run by
 run-google-java-format.py.
@@ -521,7 +521,7 @@ def fixup_loop(infile: TextIO, outfile: TextIO) -> None:
 def base_annotation(annotation: str) -> str:
     """Remove leading and trailing comment characters, spaces, arguments, and at sign.
 
-    Example: base_annotation('/*@RequiresNonNull("FileIO.data_trace_state")*/' => 'RequiresNonNull'
+    Example: base_annotation('/*@RequiresNonNull("FileIO.data_trace_state")*/') => 'RequiresNonNull'
 
     Returns:
         the annotation name without arguments or at sign
