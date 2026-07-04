@@ -31,14 +31,14 @@ provide these enhancements over plain google-java-format.
 This script reformats each file supplied on the command line according to
 the Google Java style, but with improvements to the formatting of
 annotations in comments.
-If called with no arguments, it reads from and writes to standard output.
+If called with no arguments, it reads from standard input and writes to standard output.
 
 ## check-google-java-format.py
 
 Given `.java` file names on the command line, reports any that would be
 reformatted by the `run-google-java-format.py` program, and returns
 non-zero status if there were any.
-If called with no arguments, it reads from standard output.
+If called with no arguments, it reads from standard input and writes to standard output.
 You could invoke this program, for example, in a [git pre-commit hook](#git-pre-commit-hook).
 
 ## Installing
@@ -299,7 +299,7 @@ task getCodeFormatScripts {
 ### Git pre-commit hook
 
 Here is an example of what you might put in a Git pre-commit hook.
-This only checks the files that are being comitted,
+This only checks the files that are being committed,
 which is much faster than checking all files.
 
 <!-- markdownlint-disable no-hard-tabs -->
@@ -336,7 +336,7 @@ trailing spaces.
 
 ```sh
 CHANGED_FILES=`git diff --staged --name-only --diff-filter=ACM \
-  | grep -v '.class$' | grep -v '.gz$'` | grep -v '.jar$'` \
+  | grep -v '.class$' | grep -v '.gz$' | grep -v '.jar$' \
   | grep -v '.png$' | grep -v '.xcf$'` || true
 if [ ! -z "$CHANGED_FILES" ]; then
   # echo "CHANGED_FILES: ${CHANGED_FILES}"
@@ -465,7 +465,7 @@ If you get an error in
 ```urllib.urlretrieve(gjf_url, gjf_jar_path)```
 then there is a problem with your installation of Python.
 
-On MacOS Sierra, you can correct the problem by running these commands:
+On macOS Sierra, you can correct the problem by running these commands:
 
 ```sh
 brew install openssl

@@ -27,7 +27,7 @@ if it matches a hard-coded list of directories."
                 (not (string-match-p "/checker/jdk/" (buffer-file-name)))
                 (not (string-match-p "\\.astub$" (buffer-file-name)))
                 )
-           ;; non-standard cammand-line arguments
+           ;; non-standard command-line arguments
            "run-google-java-format.py -a ")
           (t
            ;; for all other projects, don't automatically reformat

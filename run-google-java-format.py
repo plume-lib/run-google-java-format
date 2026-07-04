@@ -121,7 +121,7 @@ def urlretrieve(url: str, filename: Path) -> None:
 
 
 # Set gjf_jar_path, or retrieve it if it doesn't appear locally. Does not update
-# from remove path if remote is newer, so never change files on the server.
+# from remote path if remote is newer, so never change files on the server.
 candidate1 = script_dir / gjf_jar_name
 candidate2 = script_dir.parent / "lib" / gjf_jar_name
 if candidate1.is_file():
