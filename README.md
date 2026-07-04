@@ -38,7 +38,7 @@ If called with no arguments, it reads from standard input and writes to standard
 Given `.java` file names on the command line, reports any that would be
 reformatted by the `run-google-java-format.py` program, and returns
 non-zero status if there were any.
-If called with no arguments, it reads from standard input.
+If called with no arguments, it reads from standard input and writes to standard output.
 You could invoke this program, for example, in a [git pre-commit hook](#git-pre-commit-hook).
 
 ## Installing

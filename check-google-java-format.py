@@ -7,7 +7,7 @@ to the Google Java style (as enforced by the google-java-format program,
 but with improvements to the formatting of annotations in comments).
 If any files would be affected by running run-google-java-format.py,
 this script prints their names and returns a non-zero status.
-If called with no arguments, it reads from standard input.
+If called with no arguments, it reads from standard input and writes to standard output.
 You could invoke this program, for example, in a git pre-commit hook.
 """
 
