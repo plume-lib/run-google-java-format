@@ -31,14 +31,13 @@ provide these enhancements over plain google-java-format.
 This script reformats each file supplied on the command line according to
 the Google Java style, but with improvements to the formatting of
 annotations in comments.
-If called with no arguments, it reads from standard input and writes to standard output.
 
 ## check-google-java-format.py
 
 Given `.java` file names on the command line, reports any that would be
 reformatted by the `run-google-java-format.py` program, and returns
 non-zero status if there were any.
-If called with no arguments, it reads from standard input and writes to standard output.
+If called with no arguments, it reads from standard input.
 You could invoke this program, for example, in a [git pre-commit hook](#git-pre-commit-hook).
 
 ## Installing
