@@ -7,7 +7,7 @@ to the Google Java style (as enforced by the google-java-format program,
 but with improvements to the formatting of annotations in comments).
 If any files would be affected by running run-google-java-format.py,
 this script prints their names and returns a non-zero status.
-If called with no arguments, it reads from standard input and writes to standard output.
+If called with no arguments, it reads from standard input.
 You could invoke this program, for example, in a git pre-commit hook.
 """
 
@@ -105,8 +105,9 @@ files = sys.argv[1:]
 if len(files) == 0:
     content = sys.stdin.read()
     fname = temporary_file_name() + ".java"
-    with Path(fname).open("w") as outfile:
-        print(content, file=outfile)
+    # Write verbatim; appending a newline (as `print` would) would make the
+    # comparison below always report improper formatting.
+    Path(fname).write_text(content)
     files = [fname]
 
 temps = []
@@ -130,7 +131,7 @@ if result != 0:
 exit_code = 0
 
 for i, file in enumerate(files):
-    if not filecmp.cmp(file, temps[i]):
+    if not filecmp.cmp(file, temps[i], shallow=False):
         # TODO: gives temporary file name if reading from stdin
         print("Improper formatting:", file)
         exit_code = 1
