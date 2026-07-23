@@ -56,7 +56,7 @@ java_version = match.groups()[0]
 # Version 1.10.0 and later can run under JDK 16.
 # Version 1.25.0 and later require JDK 17.
 ## To set this variable:
-## See https://github.com/diffplug/spotless/blob/main/lib/src/main/java/com/diffplug/spotless/java/GoogleJavaFormatStep.java#L75
+## https://github.com/diffplug/spotless/blob/3924217d5f711a9fa41dcb71810f6e3649328135/lib/src/main/java/com/diffplug/spotless/java/GoogleJavaFormatStep.java#L122
 ## or search for "Bump default google" in https://github.com/diffplug/spotless/blob/main/plugin-gradle/CHANGES.md
 if java_version == "1.8":
     gjf_version_default = "1.7"
