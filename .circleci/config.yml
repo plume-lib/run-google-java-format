@@ -1,42 +1,17 @@
 version: 2.1
 jobs:
-  build:
-
+  prek:
     docker:
-      - image: cimg/openjdk:25.0.3-browsers
-
-    environment:
-      TERM: dumb
-
+      - image: cimg/python:3.11
     steps:
-
-      - restore_cache:
-          keys:
-            - source-v1-{{ .Branch }}-{{ .Revision }}
-            - source-v1-{{ .Branch }}-
-            - source-v1-
       - checkout
-      - save_cache:
-          key: source-v1-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - ".git"
-
-      - run: sudo apt update
       - run:
-          name: Install dependencies via apt
-          command: sudo apt -y install devscripts shellcheck shfmt yamllint
+          name: Install prek
+          command: uv tool install prek
       - run:
-          name: Install markdownlint
-          command: sudo npm install markdownlint-cli2 --global
-      - run:
-          name: Install uv
-          command: curl -LsSf https://astral.sh/uv/install.sh | sh
-
-      - run: make style-check
-
-      - run: echo "TODO add some tests"
-
+          name: Run prek hooks
+          command: prek run -q --all-files
 workflows:
   build:
     jobs:
-      - build
+      - prek
