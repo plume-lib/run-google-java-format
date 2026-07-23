@@ -377,7 +377,7 @@ Here is a way to deal with upstream reformatting.
 3. Reformat by running a command such as
    `make reformat`,
    `ant reformat`, or
-   `./gradlew reformat` (or whatever buildfile target you have set up).
+   `./gradlew reformat` (or whatever build file target you have set up).
 4. Examine the diffs to look for poor reformatting:
 
    ```git diff -w -b | grep -v '^[-+]import' | grep -v '^[-+]$'```
@@ -449,7 +449,7 @@ and after-reformatting is the reformatting commit:
 4. Reformat the code by running a command such as
   `make reformat`,
   `ant reformat`, or
-  `./gradlew reformat` (or whatever buildfile target you have set up).
+  `./gradlew reformat` (or whatever build file target you have set up).
 5. Commit any formatting changes.
 6. Verify that this contains only changes you made (that is, the formatting
    changes were ignored):
