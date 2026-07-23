@@ -151,7 +151,7 @@ if not under_git(script_dir, fixup_py_name):
     )
     try:
         urlretrieve(url, fixup_py_path)
-    except Exception:  # noqa: BLE001
+    except Exception:  # ruff:ignore[blind-except]
         if fixup_py_path.exists():
             print("Couldn't retrieve " + fixup_py_name + " from " + url + "; using cached version")
         else:
