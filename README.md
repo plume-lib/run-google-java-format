@@ -76,7 +76,7 @@ if you can create a version that also works on Windows, please contribute it.
 
 ### Makefile
 
-<!-- markdownlint-disable no-hard-tabs -->
+<!-- markdownlint-disable no-hard-tabs line-length -->
 <!-- pyml disable no-hard-tabs -->
 
 ```make
@@ -102,7 +102,7 @@ check-format:
 ```
 
 <!-- pyml enable no-hard-tabs -->
-<!-- markdownlint-enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs line-length -->
 
 ### Ant `build.xml`
 
@@ -115,7 +115,7 @@ At the top of your Ant `build.xml` file, augment the `<project>` block:
 
 Then, add this:
 
-<!-- markdownlint-disable no-hard-tabs -->
+<!-- markdownlint-disable no-hard-tabs line-length -->
 <!-- pyml disable no-hard-tabs -->
 
 ```xml
@@ -192,13 +192,14 @@ Then, add this:
 ```
 
 <!-- pyml enable no-hard-tabs -->
-<!-- markdownlint-enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs line-length -->
 
 ### Gradle `build.gradle`
 
-Customize per your requirements, such as excluding generated `.java` files from formatting.
+Customize per your requirements, such as excluding generated `.java` files
+from formatting.
 
-<!-- markdownlint-disable no-hard-tabs -->
+<!-- markdownlint-disable no-hard-tabs line-length -->
 <!-- pyml disable no-hard-tabs -->
 
 ```gradle
@@ -257,9 +258,9 @@ task reformat(type: Exec, dependsOn: [getCodeFormatScripts, pythonIsInstalled], 
 ```
 
 <!-- pyml enable no-hard-tabs -->
-<!-- markdownlint-enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs line-length -->
 
-<!-- markdownlint-disable no-hard-tabs -->
+<!-- markdownlint-disable no-hard-tabs line-length -->
 <!-- pyml disable no-hard-tabs -->
 
 <!--
@@ -293,7 +294,7 @@ task getCodeFormatScripts {
 -->
 
 <!-- pyml enable no-hard-tabs -->
-<!-- markdownlint-enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs line-length -->
 
 ### Git pre-commit hook
 
@@ -301,7 +302,7 @@ Here is an example of what you might put in a Git pre-commit hook.
 This only checks the files that are being committed,
 which is much faster than checking all files.
 
-<!-- markdownlint-disable no-hard-tabs -->
+<!-- markdownlint-disable no-hard-tabs line-length -->
 <!-- pyml disable no-hard-tabs -->
 
 ```sh
@@ -319,7 +320,7 @@ fi
 ```
 
 <!-- pyml enable no-hard-tabs -->
-<!-- markdownlint-enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs line-length -->
 
 You will also want to add `.run-google-java-format` to your
 `~/.gitignore-global` file or your project's `.gitignore` file.
@@ -330,7 +331,7 @@ google-java-format will complain about Java files with trailing spaces.
 Here is code for your Git pre-commit hook that finds all files that have
 trailing spaces.
 
-<!-- markdownlint-disable no-hard-tabs -->
+<!-- markdownlint-disable no-hard-tabs line-length -->
 <!-- pyml disable no-hard-tabs -->
 
 ```sh
@@ -347,7 +348,7 @@ fi
 ```
 
 <!-- pyml enable no-hard-tabs -->
-<!-- markdownlint-enable no-hard-tabs -->
+<!-- markdownlint-enable no-hard-tabs line-length -->
 
 ## Dealing with large changes when reformatting your codebase
 

@@ -76,7 +76,7 @@ if not under_git(script_dir, run_py_name):
     url = "https://raw.githubusercontent.com/plume-lib/run-google-java-format/master/" + run_py_name
     try:
         urlretrieve(url, run_py_path)
-    except Exception:  # noqa: BLE001
+    except Exception:  # ruff:ignore[blind-except]
         if run_py_path.exists():
             print("Couldn't retrieve " + run_py_name + " from " + url + "; using cached version")
         else:
@@ -93,7 +93,7 @@ def temporary_file_name() -> str:
     Returns:
         the name of a temporary file.
     """
-    return str(Path(temp_dir) / next(tempfile._get_candidate_names()))  # ty: ignore[unresolved-attribute] # noqa: SLF001
+    return str(Path(temp_dir) / next(tempfile._get_candidate_names()))  # ty: ignore[unresolved-attribute] # ruff:ignore[private-member-access]
 
 
 def cleanup() -> None:
