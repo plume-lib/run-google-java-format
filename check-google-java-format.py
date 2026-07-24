@@ -15,6 +15,8 @@ You could invoke this program, for example, in a git pre-commit hook.
 # this script can be eliminated, or its interface simplified.
 
 import filecmp
+import itertools
+import os
 import shutil
 import stat
 import subprocess
@@ -64,9 +66,26 @@ def under_git(directory: Path, filename: str) -> bool:
 
 
 def urlretrieve(url: str, filename: Path) -> None:
-    """Like urllib.urlretrieve."""
-    with urlopen(url) as in_stream, filename.open("wb") as out_file:
-        shutil.copyfileobj(in_stream, out_file)
+    """Like urllib.urlretrieve, but writes `filename` atomically.
+
+    Downloads to a temporary file in the destination directory, then renames it
+    into place, so an interrupted transfer never leaves a partial file at
+    `filename`.
+    """
+    with tempfile.NamedTemporaryFile(dir=filename.parent, delete=False) as tmp:
+        tmp_path = Path(tmp.name)
+        try:
+            with urlopen(url) as in_stream:
+                shutil.copyfileobj(in_stream, tmp)
+        except BaseException:
+            tmp_path.unlink(missing_ok=True)
+            raise
+    # NamedTemporaryFile creates the file mode 0600; instead give it the
+    # umask-respecting permissions that a normally-created file would have.
+    umask = os.umask(0o022)
+    os.umask(umask)
+    tmp_path.chmod(0o666 & ~umask)
+    tmp_path.rename(filename)
 
 
 # Don't replace local with remote if local is under version control.
@@ -85,15 +104,16 @@ if not under_git(script_dir, run_py_name):
     run_py_path.chmod(run_py_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 temp_dir = tempfile.mkdtemp(prefix="check-google-java-format-")
+_temp_counter = itertools.count()
 
 
 def temporary_file_name() -> str:
-    """Return the name of a temporary file.
+    """Return the name of a temporary file, unique within this run's temp_dir.
 
     Returns:
         the name of a temporary file.
     """
-    return str(Path(temp_dir) / next(tempfile._get_candidate_names()))  # ty: ignore[unresolved-attribute] # ruff:ignore[private-member-access]
+    return str(Path(temp_dir) / f"tmp{next(_temp_counter)}")
 
 
 def cleanup() -> None:
@@ -130,8 +150,8 @@ if result != 0:
 
 exit_code = 0
 
-for i, file in enumerate(files):
-    if not filecmp.cmp(file, temps[i], shallow=False):
+for file, temp in zip(files, temps, strict=True):
+    if not filecmp.cmp(file, temp, shallow=False):
         # TODO: gives temporary file name if reading from stdin
         print("Improper formatting:", file)
         exit_code = 1
