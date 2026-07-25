@@ -115,9 +115,26 @@ def under_git(directory: Path, filename: str) -> bool:
 
 
 def urlretrieve(url: str, filename: Path) -> None:
-    """Like urllib.urlretrieve."""
-    with urlopen(url) as in_stream, filename.open("wb") as out_file:
-        shutil.copyfileobj(in_stream, out_file)
+    """Like urllib.urlretrieve, but writes `filename` atomically.
+
+    Downloads to a temporary file in the destination directory, then renames it
+    into place, so an interrupted transfer never leaves a partial file at
+    `filename`.
+    """
+    with tempfile.NamedTemporaryFile(dir=filename.parent, delete=False) as tmp:
+        tmp_path = Path(tmp.name)
+        try:
+            with urlopen(url) as in_stream:
+                shutil.copyfileobj(in_stream, tmp)
+        except BaseException:
+            tmp_path.unlink(missing_ok=True)
+            raise
+    # NamedTemporaryFile creates the file mode 0600; instead give it the
+    # umask-respecting permissions that a normally-created file would have.
+    umask = os.umask(0o022)
+    os.umask(umask)
+    tmp_path.chmod(0o666 & ~umask)
+    tmp_path.rename(filename)
 
 
 # Set gjf_jar_path, or retrieve it if it doesn't appear locally. Does not update
@@ -131,13 +148,10 @@ elif candidate2.is_file():
 else:
     gjf_jar_path = candidate1
     # print("retrieving " + gjf_url + " to " + gjf_jar_path)
+    # urlretrieve downloads atomically (temp file plus rename), which avoids
+    # races with other concurrent run-google-java-format processes.
     try:
-        # Download to a temporary file, then rename atomically.
-        # This avoids race conditions with other run-google-java-format processes.
-        # "delete=False" because the file will be renamed.
-        with tempfile.NamedTemporaryFile(dir=script_dir, delete=False) as f:
-            urlretrieve(gjf_url, Path(f.name))
-            Path(f.name).rename(gjf_jar_path)
+        urlretrieve(gjf_url, gjf_jar_path)
     except Exception as e:
         raise Exception("Problem while retrieving " + gjf_url + " to " + str(gjf_jar_path)) from e
 

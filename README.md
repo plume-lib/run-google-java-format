@@ -461,9 +461,9 @@ the above instructions must be revised.
 
 ## Troubleshooting
 
-If you get an error in
-```urllib.urlretrieve(gjf_url, gjf_jar_path)```
-then there is a problem with your installation of Python.
+If you get an error such as `Problem while retrieving ...` while the script
+downloads google-java-format, then there is a problem with your installation of
+Python (typically its SSL support).
 
 On macOS Sierra, you can correct the problem by running these commands:
 
