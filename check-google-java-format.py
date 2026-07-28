@@ -150,7 +150,10 @@ if result != 0:
 
 exit_code = 0
 
-for file, temp in zip(files, temps, strict=True):
+if len(files) != len(temps):
+    raise ValueError("Length mismatch between files and temps")
+
+for file, temp in zip(files, temps):
     if not filecmp.cmp(file, temp, shallow=False):
         # TODO: gives temporary file name if reading from stdin
         print("Improper formatting:", file)
