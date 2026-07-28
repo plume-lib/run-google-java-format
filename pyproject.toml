@@ -7,7 +7,4 @@ requires-python = ">=3.10"
 dependencies = []
 
 [dependency-groups]
-dev = [
-    "pymarkdownlnt>=0.9.33",
-    "ty>=0.0.1a31",
-]
+dev = ["pymarkdownlnt>=0.9.33", "ty>=0.0.1a31"]

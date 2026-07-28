@@ -153,7 +153,8 @@ exit_code = 0
 if len(files) != len(temps):
     raise ValueError("Length mismatch between files and temps")
 
-for file, temp in zip(files, temps):
+# "zip-without-explicit-strict" can be removed after CSE upgrades to Python 3.10.
+for file, temp in zip(files, temps):  # ruff:ignore[zip-without-explicit-strict]
     if not filecmp.cmp(file, temp, shallow=False):
         # TODO: gives temporary file name if reading from stdin
         print("Improper formatting:", file)
