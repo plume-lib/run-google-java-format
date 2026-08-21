@@ -62,8 +62,12 @@ if java_version == "1.8":
     gjf_version_default = "1.7"
 elif java_version == "11":
     gjf_version_default = "1.24.0"
-else:
+elif java_version == "17":
     gjf_version_default = "1.28.0"
+elif java_version == "21":
+    gjf_version_default = "1.29.0"
+else:
+    gjf_version_default = "1.36.1"
 gjf_version = os.getenv("GJF_VERSION", gjf_version_default)
 gjf_download_prefix = "v" if re.match(r"^1\.[1-9][0-9]", gjf_version) else "google-java-format-"
 gjf_snapshot = os.getenv("GJF_SNAPSHOT", "")
