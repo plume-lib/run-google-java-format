@@ -392,7 +392,7 @@ type_annotations = {
 # File .type-annotations can add to the type_annotations variable.
 _type_annotations_path = pathlib.Path(".type-annotations")
 if _type_annotations_path.is_file():
-    exec(_type_annotations_path.read_text())  # ruff:ignore[exec-builtin]
+    exec(_type_annotations_path.read_text())
 
 debug = False
 # debug = True
