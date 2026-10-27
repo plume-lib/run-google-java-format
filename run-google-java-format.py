@@ -61,7 +61,6 @@ java_version_string = subprocess.check_output(
 ).decode("utf-8")
 if debug:
     print("java_version_string =", java_version_string)
-# java_version is the major version of the JDK, such as 8, 11, or 17.
 java_version = parse_java_version(java_version_string)
 
 ## To use an officially released version.
