@@ -4,8 +4,8 @@ import ast
 import re
 import unittest
 from collections.abc import Callable
-from typing import Any
 from pathlib import Path
+from typing import Any
 
 # Importing run-google-java-format.py would run it, so extract just the function.
 script_path = Path(__file__).resolve().parent.parent / "run-google-java-format.py"
@@ -16,7 +16,7 @@ function_def = next(
     if isinstance(node, ast.FunctionDef) and node.name == "parse_java_version"
 )
 namespace: dict[str, Any] = {"re": re}
-exec(compile(ast.Module([function_def], []), str(script_path), "exec"), namespace)  # noqa: S102
+exec(compile(ast.Module([function_def], []), str(script_path), "exec"), namespace)
 parse_java_version: Callable[[str], int] = namespace["parse_java_version"]
 
 
@@ -50,7 +50,7 @@ class TestParseJavaVersion(unittest.TestCase):
 
     def test_no_version(self) -> None:
         """Test output that contains no version line."""
-        with self.assertRaises(Exception):  # noqa: B017, PT027
+        with self.assertRaises(Exception):  # ruff: ignore[assert-raises-exception]
             parse_java_version("Error: could not find java.dll\n")
 
 
