@@ -30,16 +30,17 @@ script_dir = Path(__file__).resolve().parent
 fixup_py_name = "fixup-google-java-format.py"
 fixup_py_path = script_dir / fixup_py_name
 
-# java_version_string is either 1.8 or nothing.
-# For JDK  8, `java -version` has the form: openjdk version "1.8.0_292"
-# For JDK 11, `java -version` has the form: openjdk 11.0.11 2021-04-20
-# For JDK 17, `java -version` has the form: java 17 2021-09-14 LTS
+# java_version_string is the output of `java -version`.  Its first line has a form such as:
+#   JDK  8: openjdk version "1.8.0_292"
+#   JDK 11: openjdk version "11.0.11" 2021-04-20
+#   JDK 17: java version "17" 2021-09-14 LTS
 java_version_string = subprocess.check_output(
     ["java", "-version"], stderr=subprocess.STDOUT
 ).decode("utf-8")
 if debug:
     print("java_version_string =", java_version_string)
-match = re.search(r'"(\d+(\.\d+)?).*"', java_version_string)
+# java_version is the major version, such as "1.8", "11", or "17".
+match = re.search(r'"(1\.\d+|\d+)[^"]*"', java_version_string)
 if not match:
     msg = f'no match for java version string "{java_version_string}"'
     raise Exception(msg)
