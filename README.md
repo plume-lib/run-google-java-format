@@ -405,7 +405,7 @@ Here is a way to deal with upstream reformatting.
         or use `<ul>` to format lists.
 
       (You can work in the branch where you are doing reformatting.
-      Alternately, you might want to change your source code in the master
+      Alternatively, you might want to change your source code in the master
       branch, move the `before-reformatting` tag, and then start over with
       formatting.)
 5. Run tests
@@ -426,7 +426,7 @@ Here is a way to deal with upstream reformatting.
 Assuming before-reformatting is the last commit before reformatting
 and after-reformatting is the reformatting commit:
 
-1. Merge in the commit before the reformatting into your branch.
+1. Merge the commit before the reformatting into your branch.
 
     ```sh
     git merge before-reformatting
