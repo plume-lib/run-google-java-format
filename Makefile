@@ -3,6 +3,9 @@
 # Nothing to do
 default:
 
+test:
+	python3 -m unittest discover -s tests
+
 type-qualifiers.txt:
 	grep --recursive --files-with-matches -e '^@Target\b.*TYPE_USE' ${CHECKERFRAMEWORK}/checker/src/test ${CHECKERFRAMEWORK}/checker-qual/src/main/java ${CHECKERFRAMEWORK}/framework/src/main/java ${CHECKERFRAMEWORK}/docs/examples/units-extension ${CHECKERFRAMEWORK}/framework/src/test/java \
 	| grep -v '~' | sed 's:.*/::' \

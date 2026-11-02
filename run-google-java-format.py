@@ -30,20 +30,38 @@ script_dir = Path(__file__).resolve().parent
 fixup_py_name = "fixup-google-java-format.py"
 fixup_py_path = script_dir / fixup_py_name
 
-# java_version_string is either 1.8 or nothing.
-# For JDK  8, `java -version` has the form: openjdk version "1.8.0_292"
-# For JDK 11, `java -version` has the form: openjdk 11.0.11 2021-04-20
-# For JDK 17, `java -version` has the form: java 17 2021-09-14 LTS
+
+def parse_java_version(java_version_string: str) -> int:
+    """Return the major version of the JDK, given the output of `java -version`.
+
+    The output of `java -version` contains a line with a form such as:
+      JDK  8: openjdk version "1.8.0_292"
+      JDK 11: openjdk version "11.0.11" 2021-04-20
+      JDK 17: java version "17" 2021-09-14 LTS
+    Other lines may precede it, such as "Picked up JAVA_TOOL_OPTIONS: ...".
+
+    Args:
+        java_version_string: the output of `java -version`
+
+    Returns:
+        the major version of the JDK, such as 8, 11, or 17
+
+    Raises:
+        Exception: if `java_version_string` contains no version line.
+    """
+    match = re.search(r'^\w+ version "(?:1\.(\d+)|(\d+))', java_version_string, re.MULTILINE)
+    if not match:
+        msg = f'no match for java version string "{java_version_string}"'
+        raise Exception(msg)
+    return int(match.group(1) or match.group(2))
+
+
 java_version_string = subprocess.check_output(
     ["java", "-version"], stderr=subprocess.STDOUT
 ).decode("utf-8")
 if debug:
     print("java_version_string =", java_version_string)
-match = re.search(r'"(\d+(\.\d+)?).*"', java_version_string)
-if not match:
-    msg = f'no match for java version string "{java_version_string}"'
-    raise Exception(msg)
-java_version = match.groups()[0]
+java_version = parse_java_version(java_version_string)
 
 ## To use an officially released version.
 ## (Releases appear at https://github.com/google/google-java-format/releases/ ,
@@ -58,13 +76,13 @@ java_version = match.groups()[0]
 ## To set this variable:
 ## https://github.com/diffplug/spotless/blob/3924217d5f711a9fa41dcb71810f6e3649328135/lib/src/main/java/com/diffplug/spotless/java/GoogleJavaFormatStep.java#L122
 ## or search for "Bump default google" in https://github.com/diffplug/spotless/blob/main/plugin-gradle/CHANGES.md
-if java_version == "1.8":
+if java_version < 11:
     gjf_version_default = "1.7"
-elif java_version == "11":
+elif java_version < 17:
     gjf_version_default = "1.24.0"
-elif java_version == "17":
+elif java_version < 21:
     gjf_version_default = "1.28.0"
-elif java_version == "21":
+elif java_version < 22:
     gjf_version_default = "1.29.0"
 else:
     gjf_version_default = "1.36.1"
@@ -187,7 +205,7 @@ if len(files) == 0:
     print("run-google-java-format.py expects 1 or more filenames as arguments")
     sys.exit(1)
 
-if java_version == "1.8":
+if java_version < 9:
     jdk_opens = []
 else:
     # From https://github.com/google/google-java-format/releases/

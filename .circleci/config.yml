@@ -11,6 +11,9 @@ jobs:
       - run:
           name: Run prek hooks
           command: prek run -q --all-files
+      - run:
+          name: Run tests
+          command: make test
 workflows:
   build:
     jobs:
